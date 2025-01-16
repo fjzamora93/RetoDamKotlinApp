@@ -151,7 +151,7 @@ fun MovieItem(movie: Movie) {
                         println("MOstrar detalles")
 
                         navigationViewModel.navigate(
-                            ScreensRoutes.MovieDetailScreen.createRoute(movieId = movie.imdbID)
+                            ScreensRoutes.MovieDetailScreen.createRoute(movieID = movie.imdbID)
                         )
 
                     }

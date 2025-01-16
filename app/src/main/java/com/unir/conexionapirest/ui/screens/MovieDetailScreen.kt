@@ -28,73 +28,59 @@ import com.unir.conexionapirest.ui.components.DetailButton
 import com.unir.conexionapirest.ui.components.Header
 import com.unir.conexionapirest.ui.viewmodels.MovieViewModel
 
-
 @Composable
 fun MovieDetailScreen(
     movieId: String,
     movieViewModel: MovieViewModel = hiltViewModel()
-
 ) {
-    val movie by movieViewModel.selectedMovie.observeAsState()
-
+    // Observe the movie data from the ViewModel
+    // Trigger movie fetch when movieId changes
+    movieViewModel.fetchMovieById(movieId)
     LaunchedEffect(movieId) {
         movieViewModel.fetchMovieById(movieId)
     }
+    val movie by movieViewModel.selectedMovie.observeAsState()
+
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp) // Espacio entre los elementos
     ) {
+        Column(){
+            Header()
+            Text("HOLA")
 
 
-
-        Header()
-
+        println("Y esta es la películae n el screen de detalles: $movie")
+        // If movie is null, show loading or empty state
         if (movie != null) {
-            var selectedMovie by remember { mutableStateOf(movie!!) }
-
+            // No need to remember the state, just use the observed movie directly
             Text("Detalles de la película")
+
             AsyncImage(
-                model = selectedMovie!!.poster,
-                contentDescription = selectedMovie?.title ?: "Título no disponible",
+                model = movie!!.poster,  // Access directly
+                contentDescription = movie?.title ?: "Título no disponible",
                 modifier = Modifier
                     .height(200.dp)
                     .weight(1f)
             )
 
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .padding(top = 18.dp)
-            ) {
+            Text(movie?.title ?: "No Title")
 
-                Row() {
-                    Text(
-                        text = selectedMovie!!.title ?: "Título no disponible",
-                        style = MaterialTheme.typography.titleMedium,
-                        maxLines = 3,
-                    )
-                }
-
-                Text(
-                    text = selectedMovie!!.year ?: "Año desconocido",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-
-                Row() {
-                    BackButton()
-
-                    BookMarkButton(
-                        onClick = { println("Añadir a favoritos") }
-                    )
-                }
-
-            }
-
+            // Add more details here as needed
         } else {
-            Text("La película es más nula.... anda, bonico, ve y haz el fetch a la película que quieres")
+            // Show a loading indicator or placeholder
+            Column(){
+                Text("Cargando detalles...")
+
+                BookMarkButton(
+                    onClick = { println("Añadir a favoritos")
+                    }
+                )
+            }
+        }
         }
     }
 }

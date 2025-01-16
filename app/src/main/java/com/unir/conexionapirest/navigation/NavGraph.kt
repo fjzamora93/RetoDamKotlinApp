@@ -71,9 +71,9 @@ fun NavGraph(
             // Pantalla de detalles de películas
             composable(
                 ScreensRoutes.MovieDetailScreen.route,
-                arguments = listOf(navArgument("movieId") { type = NavType.StringType })
+                arguments = listOf(navArgument("movieID") { type = NavType.StringType })
             ) { backStackEntry ->
-                val movieId = backStackEntry.arguments?.getString("movieId") ?: "0"
+                val movieId = backStackEntry.arguments?.getString("movieID") ?: "0"
                 MovieDetailScreen(movieId = movieId)
             }
         }
