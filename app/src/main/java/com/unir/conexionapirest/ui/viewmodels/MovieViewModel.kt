@@ -6,19 +6,43 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.unir.conexionapirest.data.database.MovieApiService
 import com.unir.conexionapirest.data.model.Movie
+import com.unir.conexionapirest.data.model.MovieDetail
 import com.unir.conexionapirest.data.repository.MovieRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MovieViewModel : ViewModel() {
-    private val movieRepository = MovieRepository()
+@HiltViewModel
+class MovieViewModel @Inject constructor(
+    private val movieRepository: MovieRepository
+) : ViewModel() {
+
+    private val _selectedMovie = MutableLiveData<MovieDetail>() // Change to MovieDetail
+    val selectedMovie: LiveData<MovieDetail> get() = _selectedMovie //
 
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> get() = _movies
 
     private val _error =MutableLiveData<Boolean>()
     val error: LiveData<Boolean> = _error
+
+    fun fetchMovieById(movieId: String) {
+        println("Película encontrada Y ACTUALIZADA en el ModelView: ${selectedMovie.value}")
+
+        movieRepository.fetchMovieById(
+            movieId = movieId,
+            onSuccess = { movie ->
+                _selectedMovie.value = movie  // Now it's a MovieDetail
+                println("Película encontrada Y ACTUALIZADA en el ModelView: ${selectedMovie.value}")
+                _error.value = false  // Si todo va bien, resetear el error
+            },
+            onError = {
+                _error.value = true  // Aquí manejas el error
+            }
+        )
+    }
 
     // Función para hacer la solicitud a la API a través del repositorio
     fun fetchMovies() {
@@ -44,5 +68,7 @@ class MovieViewModel : ViewModel() {
             }
         )
     }
+
+
 
 }

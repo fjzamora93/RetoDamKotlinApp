@@ -1,11 +1,9 @@
 package com.unir.conexionapirest.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,16 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.LiveData
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.unir.conexionapirest.data.model.Movie
-import com.unir.conexionapirest.navigation.LocalNavigationViewModel
-import com.unir.conexionapirest.navigation.ScreensRoutes
 import com.unir.conexionapirest.ui.components.BookMarkButton
 import com.unir.conexionapirest.ui.components.CustomHorizontalDivider
 import com.unir.conexionapirest.ui.components.DetailButton
@@ -44,11 +34,8 @@ import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
 import com.unir.conexionapirest.ui.viewmodels.MovieViewModel
 
 @Composable
-fun MainScreen(
-    movieViewModel: MovieViewModel = hiltViewModel()
-
-){
-
+fun FavMoviesScreen(){
+    Header()
     Column(
         Modifier
             .fillMaxSize()
@@ -56,9 +43,8 @@ fun MainScreen(
         horizontalAlignment = Alignment.CenterHorizontally
 
     ){
-        Header()
         Text(
-            text = "Lista de película",
+            text = "Mis películas favoritas",
             style = MaterialTheme.typography.titleLarge,
             color = MiPaletaDeColores.Gold,
             maxLines = 3,
@@ -74,7 +60,7 @@ fun MainScreen(
 
 
 @Composable
-fun MovieList(
+fun FavMovieList(
     modifier: Modifier = Modifier,
     movieViewModel: MovieViewModel = hiltViewModel()
 
@@ -107,14 +93,14 @@ fun MovieList(
 
 
 @Composable
-fun MovieItem(movie: Movie) {
+fun FavMovieItem(movie: Movie) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp) // Espacio entre los elementos
     ) {
-        val navigationViewModel = LocalNavigationViewModel.current
+
         // Póster en la primera mitad
         AsyncImage(
             model = movie.poster, // URL de la imagen
@@ -147,14 +133,7 @@ fun MovieItem(movie: Movie) {
 
             Row(){
                 DetailButton(
-                    onClick = {
-                        println("MOstrar detalles")
-
-                        navigationViewModel.navigate(
-                            ScreensRoutes.MovieDetailScreen.createRoute(movieId = movie.imdbID)
-                        )
-
-                    }
+                    onClick = {println("MOstrar detalles")}
                 )
 
                 BookMarkButton (

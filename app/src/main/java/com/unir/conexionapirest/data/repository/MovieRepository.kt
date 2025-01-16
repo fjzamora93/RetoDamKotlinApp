@@ -2,6 +2,7 @@ package com.unir.conexionapirest.data.repository
 
 import com.unir.conexionapirest.data.database.MovieApiService
 import com.unir.conexionapirest.data.model.Movie
+import com.unir.conexionapirest.data.model.MovieDetail
 import com.unir.conexionapirest.data.model.MovieResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -10,8 +11,9 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-class MovieRepository {
+class MovieRepository @Inject constructor() {
     private val movieApiService: MovieApiService
 
     init {
@@ -56,6 +58,7 @@ class MovieRepository {
             val movies = call.body()
             println("Realizando búsqueda con filtro dentro del REpositorio: $movies y $filter")
 
+
             withContext(Dispatchers.Main) {
                 if (call.isSuccessful) {
                     val movieList = movies?.Search ?: emptyList()
@@ -69,8 +72,28 @@ class MovieRepository {
         }
     }
 
+    fun fetchMovieById(
+        movieId: String,
+        onSuccess: (MovieDetail) -> Unit,
+        onError: () -> Unit
+    ) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val call = movieApiService.getMovieById(movieId = movieId)
+            val movie = call.body()
+            println("Realizando búsqueda con filtro dentro del REpositorio: $movie y $movieId")
+            println("JSON recibido: ${call.raw()}")
 
+            withContext(Dispatchers.Main) {
+                if (call.isSuccessful && movie != null) {
+                    onSuccess(movie)
+                } else {
+                    println("Error: ${call.errorBody()?.string()}")
+                    onError()
+                }
+            }
 
+        }
+    }
 
 
 }

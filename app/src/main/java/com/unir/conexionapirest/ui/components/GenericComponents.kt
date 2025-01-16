@@ -8,11 +8,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +34,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.unir.conexionapirest.navigation.LocalNavigationViewModel
+import com.unir.conexionapirest.navigation.ScreensRoutes
 import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
 import com.unir.conexionapirest.ui.viewmodels.MovieViewModel
 
@@ -141,6 +147,49 @@ fun SendButton(
             imageVector = Icons.AutoMirrored.Filled.Send, // Icono de flecha de enviar
             contentDescription = "Send", // Descripción del icono
             tint = MiPaletaDeColores.Gold // Puedes ajustar el color si es necesario
+        )
+    }
+}
+
+@Composable
+fun BackButton() {
+    val navigationViewModel = LocalNavigationViewModel.current
+
+    IconButton(
+        onClick = { navigationViewModel.goBack() },
+        modifier = Modifier
+            .size(48.dp) // Tamaño del botón
+            .clip(CircleShape) // Forma circular
+            .background(MiPaletaDeColores.Bronze) // Fondo atractivo
+            .padding(8.dp) // Espaciado interno
+    ) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Flecha hacia atrás
+            contentDescription = "Go Back", // Descripción para accesibilidad
+            tint = MiPaletaDeColores.Gold, // Color del ícono
+            modifier = Modifier.size(24.dp) // Tamaño del ícono
+        )
+    }
+}
+
+
+@Composable
+fun HomeButton() {
+    val navigationViewModel = LocalNavigationViewModel.current
+
+    IconButton(
+        onClick = { navigationViewModel.navigate(ScreensRoutes.MainScreen.route) },
+        modifier = Modifier
+            .size(48.dp) // Tamaño del botón
+            .clip(CircleShape) // Forma circular
+            .background(MiPaletaDeColores.Bronze) // Fondo atractivo
+            .padding(8.dp) // Espaciado interno
+    ) {
+        Icon(
+            imageVector = Icons.Default.Home, // Flecha hacia atrás
+            contentDescription = "Go Back", // Descripción para accesibilidad
+            tint = MiPaletaDeColores.Gold, // Color del ícono
+            modifier = Modifier.size(24.dp) // Tamaño del ícono
         )
     }
 }

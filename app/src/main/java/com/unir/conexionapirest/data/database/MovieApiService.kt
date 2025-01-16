@@ -1,6 +1,8 @@
 package com.unir.conexionapirest.data.database
 
 import androidx.room.Dao
+import com.unir.conexionapirest.data.model.Movie
+import com.unir.conexionapirest.data.model.MovieDetail
 import com.unir.conexionapirest.data.model.MovieResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -29,5 +31,11 @@ interface MovieApiService {
         @Query("plot") plot: String = "",
         @Query("page") page: Int = 1
     ): Response<MovieResponse>
+
+    @GET("/")
+    suspend fun getMovieById(
+        @Query("apikey") apiKey: String = "f9c39ba3",
+        @Query("i") movieId: String
+    ): Response<MovieDetail>
 
 }
