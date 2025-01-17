@@ -11,33 +11,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
-class MovieRemoteRepository @Inject constructor() {
+
+class MovieRemoteRepository @Inject constructor(
     private val movieApiService: MovieApiService
+) {
 
-    init {
-        // Inicializamos Retrofit y el servicio
-        val retrofit = getRetrofit()
-        movieApiService = retrofit.create(MovieApiService::class.java)
-    }
-
-    private fun getRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://www.omdbapi.com/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-
-
-
-    /**
-     * Recordamos que la API OMDB no tiene un GET/All, y está limitado al número de resultados que devuelve.
-     * SI supera ese límite, sencillamente no devuelve nada.
-     * Para prevenirlo, ponemos una búsqueda por defecto en "main" (por elegir una palabra).
-     *
-     * En un caso real, esto lo intentaríamos gestionar de manera distinta.
-     * Por ejemplo, ordenar por "más populares" y lanzar una petición con ese filtro limitado a 20 resultados
-     * o crear un sistema de paginación para poder al menos manejarlo.
-     * */
     fun fetchMovies(
         filter: String,
         onSuccess: (List<Movie>) -> Unit,
@@ -46,13 +24,16 @@ class MovieRemoteRepository @Inject constructor() {
 
         // Establecemos un filtro por defecto si no hay palabra, buscará, por ejemplo "main"
         var filterCopy = if (filter.isBlank()) "main" else filter
-
+        var year = if (filter.isBlank()) "2024" else ""
 
         CoroutineScope(Dispatchers.IO).launch {
-            val call = movieApiService.getMovies(searchTerm = filterCopy)
+            val call = movieApiService.getMovies(
+                searchTerm = filterCopy,
+                year = year
+            )
+
             val movies = call.body()
             println("Realizando búsqueda con filtro dentro del REpositorio: $movies y $filterCopy")
-
 
             withContext(Dispatchers.Main) {
                 if (call.isSuccessful) {

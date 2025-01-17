@@ -18,10 +18,10 @@ data class Movie(
     @SerializedName("Poster") val poster: String,
 
     // Campos de los detalles
-    @SerializedName("Plot") val plot: String,
-    @SerializedName("Rated") val rated: String,
-    @SerializedName("Released") val released : String,
-    @SerializedName("Runtime")  val runtime: String,
+//    @SerializedName("Plot") val plot: String = "",
+//    @SerializedName("Rated") val rated: String = "",
+//    @SerializedName("Released") val released : String = "",
+//    @SerializedName("Runtime")  val runtime: String = "",
 ) {
 
 }

@@ -1,5 +1,6 @@
 package com.unir.conexionapirest.ui.screens
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,17 +15,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,12 +47,14 @@ import com.unir.conexionapirest.ui.components.Header
 import com.unir.conexionapirest.ui.components.SearchField
 import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
 import com.unir.conexionapirest.ui.viewmodels.MovieViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun MainScreen(
-    movieViewModel: MovieViewModel = hiltViewModel()
+fun MainScreen(){
 
-){
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val coroutineScope = rememberCoroutineScope()
+    val activity = LocalContext.current as Activity
 
     Column(
         Modifier
@@ -56,19 +63,32 @@ fun MainScreen(
         horizontalAlignment = Alignment.CenterHorizontally
 
     ){
-        Header()
-        Text(
-            text = "Lista de película",
-            style = MaterialTheme.typography.titleLarge,
-            color = MiPaletaDeColores.Gold,
-            maxLines = 3,
-        )
+        LeftHalfDrawer(
+            drawerState = drawerState,
+            onClose = {
+                coroutineScope.launch { drawerState.close() }
+            }
+        ) {
+            // CONTENIDO DE LA PANTALLA
+            Column {
+                Header(
+                    onMenuClick = {
+                        coroutineScope.launch { drawerState.open() }
+                    },
+                )
 
+                Text(
+                    text = "Lista de películas",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MiPaletaDeColores.Gold,
+                    maxLines = 3,
+                )
 
-
-        MovieList(
-            Modifier.fillMaxHeight()
-        )
+                MovieList(
+                    Modifier.fillMaxHeight()
+                )
+            }
+        }
     }
 }
 
@@ -113,14 +133,18 @@ fun MovieList(
 
 
 @Composable
-fun MovieItem(movie: Movie) {
+fun MovieItem(
+    movie: Movie,
+    movieViewModel: MovieViewModel = hiltViewModel()
+) {
+    val navigationViewModel = LocalNavigationViewModel.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp) // Espacio entre los elementos
     ) {
-        val navigationViewModel = LocalNavigationViewModel.current
         // Póster en la primera mitad
         AsyncImage(
             model = movie.poster, // URL de la imagen
@@ -154,8 +178,6 @@ fun MovieItem(movie: Movie) {
             Row(){
                 DetailButton(
                     onClick = {
-                        println("MOstrar detalles")
-
                         navigationViewModel.navigate(
                             ScreensRoutes.MovieDetailScreen.createRoute(movieID = movie.imdbID)
                         )
@@ -164,7 +186,11 @@ fun MovieItem(movie: Movie) {
                 )
 
                 BookMarkButton (
-                    onClick = { println("Añadir a favoritos") }
+                    onClick = {
+                        println("Añadir a favoritos ${movie.title}")
+                        movieViewModel.addMovieToFavorites(movie)
+                    },
+
                 )
             }
 

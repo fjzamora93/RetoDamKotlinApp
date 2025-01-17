@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.unir.conexionapirest.data.model.Movie
 import com.unir.conexionapirest.data.model.MovieDetail
+import com.unir.conexionapirest.data.repository.LocalMovieRepository
 import com.unir.conexionapirest.data.repository.MovieRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieViewModel @Inject constructor(
-    private val movieRemoteRepository: MovieRemoteRepository
+    private val movieRemoteRepository: MovieRemoteRepository,
+    private val movieLocalRepository: LocalMovieRepository
 ) : ViewModel() {
 
     private val _selectedMovie = MutableLiveData<MovieDetail>() // Change to MovieDetail
@@ -21,6 +23,9 @@ class MovieViewModel @Inject constructor(
 
     private val _movies = MutableLiveData<List<Movie>>()
     val movies: LiveData<List<Movie>> get() = _movies
+
+    private val _favMovies = MutableLiveData<List<Movie>>()
+    val favMovies: LiveData<List<Movie>> get() = _favMovies
 
     private val _error =MutableLiveData<Boolean>()
     val error: LiveData<Boolean> = _error
@@ -44,7 +49,6 @@ class MovieViewModel @Inject constructor(
     }
 
 
-
     fun fetchMovies(filter: String = "") {
         println("Realizando búsqueda con filtro dentro del ViewMOdel: $filter")
         movieRemoteRepository.fetchMovies(
@@ -56,6 +60,27 @@ class MovieViewModel @Inject constructor(
                 _error.value = true
             }
         )
+    }
+
+    fun addMovieToFavorites(movie: Movie) {
+        viewModelScope.launch{
+            movieLocalRepository.insertFavMovie(movie)
+        }
+    }
+
+    fun getFavMovies() {
+        viewModelScope.launch{
+            val movieList = movieLocalRepository.getAllFavMovies()
+            _favMovies.value = movieList
+        }
+    }
+
+    fun removeFromFavorites(movie: Movie) {
+        viewModelScope.launch {
+            movieLocalRepository.deleteFavMovie(movie)
+            val movieList = movieLocalRepository.getAllFavMovies()
+            _favMovies.value = movieList
+        }
     }
 
 }

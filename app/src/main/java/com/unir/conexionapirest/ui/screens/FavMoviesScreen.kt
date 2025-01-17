@@ -11,13 +11,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,36 +28,52 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.unir.conexionapirest.data.model.Movie
+import com.unir.conexionapirest.navigation.LocalNavigationViewModel
+import com.unir.conexionapirest.navigation.ScreensRoutes
 import com.unir.conexionapirest.ui.components.BookMarkButton
 import com.unir.conexionapirest.ui.components.CustomHorizontalDivider
 import com.unir.conexionapirest.ui.components.DetailButton
+import com.unir.conexionapirest.ui.components.DislikeButton
 import com.unir.conexionapirest.ui.components.Header
 import com.unir.conexionapirest.ui.components.SearchField
 import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
 import com.unir.conexionapirest.ui.viewmodels.MovieViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun FavMoviesScreen(){
-    Header()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val coroutineScope = rememberCoroutineScope()
     Column(
         Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
 
-    ){
-        Text(
-            text = "Mis películas favoritas",
-            style = MaterialTheme.typography.titleLarge,
-            color = MiPaletaDeColores.Gold,
-            maxLines = 3,
-        )
+    ) {
+        LeftHalfDrawer(
+            drawerState = drawerState,
+            onClose = {
+                coroutineScope.launch { drawerState.close() }
+            }
+        ) {
+            Column {
+                Header(
+                    onMenuClick = {
+                        coroutineScope.launch { drawerState.open() }
+                    },
+                )
 
+                Text(
+                    text = "Mis películas favoritas",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MiPaletaDeColores.Gold,
+                    maxLines = 3,
+                )
 
-
-        MovieList(
-            Modifier.fillMaxHeight()
-        )
+                FavMovieList()
+            }
+        }
     }
 }
 
@@ -65,12 +84,10 @@ fun FavMovieList(
     movieViewModel: MovieViewModel = hiltViewModel()
 
 ) {
-    movieViewModel.fetchMovies()
 
-    val movies by movieViewModel.movies.observeAsState(emptyList())
-    var filter by remember { mutableStateOf("") }
-
-    // BARRA DE BÚSQUEDA
+    movieViewModel.getFavMovies()
+    val movies by movieViewModel.favMovies.observeAsState(emptyList())
+    println("LIstado de favoritos $movies")
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -78,7 +95,7 @@ fun FavMovieList(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(movies) { movie ->
-            MovieItem(movie)
+            FavMovieItem(movie)
         }
     }
 }
@@ -87,7 +104,12 @@ fun FavMovieList(
 
 
 @Composable
-fun FavMovieItem(movie: Movie) {
+fun FavMovieItem(
+    movie: Movie,
+    movieViewModel: MovieViewModel = hiltViewModel()
+) {
+    val navigationViewModel = LocalNavigationViewModel.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -127,12 +149,20 @@ fun FavMovieItem(movie: Movie) {
 
             Row(){
                 DetailButton(
-                    onClick = {println("MOstrar detalles")}
+                    onClick = {
+                        navigationViewModel.navigate(
+                            ScreensRoutes.MovieDetailScreen.createRoute(movieID = movie.imdbID)
+                        )
+                    }
                 )
 
-                BookMarkButton (
-                    onClick = { println("Añadir a favoritos") }
+                DislikeButton(
+                    onClick = {
+                        println("Eliminar de favoritos")
+                        movieViewModel.removeFromFavorites(movie)
+                    }
                 )
+
             }
 
         }

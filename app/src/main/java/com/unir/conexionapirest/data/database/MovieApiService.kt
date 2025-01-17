@@ -22,6 +22,7 @@ interface MovieApiService {
         @Query("s") searchTerm: String,
         @Query("type") type: String = "movie",
         @Query("plot") plot: String = "short",
+        @Query("y") year: String = "",
         @Query("page") page: Int = 1
     ): Response<MovieResponse>
 
