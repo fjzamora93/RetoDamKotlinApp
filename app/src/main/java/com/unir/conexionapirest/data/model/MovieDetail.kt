@@ -1,8 +1,11 @@
 package com.unir.conexionapirest.data.model
 
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 data class MovieDetail(
+    @PrimaryKey(autoGenerate = false) val imdbID: String,
+
     @SerializedName("Title") val title: String,
     @SerializedName("Year") val year: String,
     @SerializedName("Rated") val rated: String,
@@ -20,7 +23,7 @@ data class MovieDetail(
     @SerializedName("Metascore") val metascore: String,
     @SerializedName("imdbRating") val imdbRating: String,
     @SerializedName("imdbVotes") val imdbVotes: String,
-    @SerializedName("imdbID") val imdbID: String,
+
     @SerializedName("Type") val type: String,
     @SerializedName("DVD") val dvd: String,
     @SerializedName("BoxOffice") val boxOffice: String,

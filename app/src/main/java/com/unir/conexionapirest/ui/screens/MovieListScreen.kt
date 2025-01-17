@@ -88,7 +88,7 @@ fun MovieList(
     SearchField(
         onSearch = { searchText ->
             filter = searchText
-            movieViewModel.fetchMoviesByFilter(filter = searchText)
+            movieViewModel.fetchMovies(filter = searchText)
         }
     )
 
@@ -97,8 +97,14 @@ fun MovieList(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(movies) { movie ->
-            MovieItem(movie)
+        if (movies.isNotEmpty()) {
+            items(movies) { movie ->
+                MovieItem(movie)
+            }
+        } else {
+            item {
+                Text("No hay resultados de búsqueda")
+            }
         }
     }
 }

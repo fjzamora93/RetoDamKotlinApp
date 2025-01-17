@@ -2,11 +2,13 @@ package com.unir.conexionapirest.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,45 +44,39 @@ fun MovieDetailScreen(
     val movie by movieViewModel.selectedMovie.observeAsState()
 
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp) // Espacio entre los elementos
-    ) {
-        Column(){
-            Header()
-            Text("HOLA")
+    Column(){
+        Header()
 
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            item {
+                // If movie is null, show loading or empty state
+                if (movie != null) {
+                    // No need to remember the state, just use the observed movie directly
+                    Text("Detalles de la película")
 
-        println("Y esta es la películae n el screen de detalles: $movie")
-        // If movie is null, show loading or empty state
-        if (movie != null) {
-            // No need to remember the state, just use the observed movie directly
-            Text("Detalles de la película")
+                    AsyncImage(
+                        model = movie!!.poster,  // Access directly
+                        contentDescription = movie?.title ?: "Título no disponible",
+                        modifier = Modifier
+                            .height(400.dp)
+                            .fillMaxWidth()
+                    )
 
-            AsyncImage(
-                model = movie!!.poster,  // Access directly
-                contentDescription = movie?.title ?: "Título no disponible",
-                modifier = Modifier
-                    .height(200.dp)
-                    .weight(1f)
-            )
+                    Text(movie?.title ?: "No Title")
 
-            Text(movie?.title ?: "No Title")
-
-            // Add more details here as needed
-        } else {
-            // Show a loading indicator or placeholder
-            Column(){
-                Text("Cargando detalles...")
-
-                BookMarkButton(
-                    onClick = { println("Añadir a favoritos")
+                    // Add more details here as needed
+                } else {
+                    // Show a loading indicator or placeholder
+                    Column {
+                        Text("Cargando detalles...")
                     }
-                )
+                }
             }
         }
-        }
     }
+
 }

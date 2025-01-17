@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,39 +33,44 @@ fun Header(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope() // Usamos la coroutine para manejar el Drawer
     val navigationViewModel = LocalNavigationViewModel.current
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth() // Ocupa todo el ancho disponible
-            .padding(8.dp), // Espaciado opcional
-        horizontalArrangement = Arrangement.SpaceBetween // Espacia los elementos entre los extremos
-    ) {
-        // Menú de la aplicación
-        Icon(
-            imageVector = Icons.Default.Menu,
-            contentDescription = "open menu",
-            modifier = Modifier
-                .clickable { onClickMenu(navigationViewModel) }
-        )
+    Column(
+        modifier = modifier.padding(8.dp)
+    ){
 
-        HomeButton()
 
-        // Cerrar la aplicación
-        Icon(
-            imageVector = Icons.Default.Close,
-            contentDescription = "close app",
-            modifier = Modifier
-                .clickable { activity.finish() } // Acción al hacer clic
+        Row(
+            modifier = modifier
+                .fillMaxWidth() // Ocupa todo el ancho disponible
+                .padding(8.dp), // Espaciado opcional
+            horizontalArrangement = Arrangement.SpaceBetween // Espacia los elementos entre los extremos
+        ) {
+            // Menú de la aplicación
+            Icon(
+                imageVector = Icons.Default.Menu,
+                contentDescription = "open menu",
+                modifier = Modifier
+                    .clickable { onClickMenu(navigationViewModel) }
+            )
+
+            HomeButton()
+
+            // Cerrar la aplicación
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "close app",
+                modifier = Modifier
+                    .clickable { activity.finish() } // Acción al hacer clic
+            )
+        }
+
+        HorizontalDivider(
+            Modifier
+                .background(Color(0xFFEEEEEE))
+                .height(1.dp)
+                .fillMaxWidth()
         )
     }
-
-    HorizontalDivider(
-        Modifier
-            .background(Color(0xFFEEEEEE))
-            .height(1.dp)
-            .fillMaxWidth()
-    )
 }
-
 // Esto debería abrir una nueva Activity que tenga el menú
 fun onClickMenu(navigationViewModel: NavigationViewModel){
     navigationViewModel.navigate(ScreensRoutes.FavScreen.route)

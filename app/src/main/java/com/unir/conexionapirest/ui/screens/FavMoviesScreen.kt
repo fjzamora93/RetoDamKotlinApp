@@ -71,12 +71,6 @@ fun FavMovieList(
     var filter by remember { mutableStateOf("") }
 
     // BARRA DE BÚSQUEDA
-    SearchField(
-        onSearch = { searchText ->
-            filter = searchText
-            movieViewModel.fetchMoviesByFilter(filter = searchText)
-        }
-    )
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),

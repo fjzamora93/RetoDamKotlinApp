@@ -14,23 +14,18 @@ interface MovieApiService {
 //    @GET("?apikey=f9c39ba3&s=lord&type=movie&plot=short&page=1")
 //    suspend fun getMovies(): Response<MovieResponse>
 
+
+    /** La api con la que estamos trabajando no tiene un "all" como tal, por lo que debemos pasar alguna query por defecto*/
     @GET("/")
     suspend fun getMovies(
         @Query("apikey") apiKey: String = "f9c39ba3",
-        @Query("s") searchTerm: String = "lord",
+        @Query("s") searchTerm: String,
         @Query("type") type: String = "movie",
         @Query("plot") plot: String = "short",
         @Query("page") page: Int = 1
     ): Response<MovieResponse>
 
-    @GET("/")
-    suspend fun getMoviesByFilter(
-        @Query("apikey") apiKey: String = "f9c39ba3",
-        @Query("s") searchTerm: String,
-        @Query("type") type: String = "",
-        @Query("plot") plot: String = "",
-        @Query("page") page: Int = 1
-    ): Response<MovieResponse>
+
 
     @GET("/")
     suspend fun getMovieById(

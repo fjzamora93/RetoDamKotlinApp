@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName
 // Ejemplo http://www.omdbapi.com/?i=tt3896198&apikey=f9c39ba3
 // http://www.omdbapi.com/?apikey=f9c39ba3&s=lord&type=movie&plot=short&page=1
 
+@Entity(tableName = "movieTable")
 data class Movie(
     // LOs campos que aparecen en al lista
     @PrimaryKey(autoGenerate = false) val imdbID: String,

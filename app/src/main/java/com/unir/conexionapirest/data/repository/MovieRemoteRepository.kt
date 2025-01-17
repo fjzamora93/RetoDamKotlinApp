@@ -3,17 +3,15 @@ package com.unir.conexionapirest.data.repository
 import com.unir.conexionapirest.data.database.MovieApiService
 import com.unir.conexionapirest.data.model.Movie
 import com.unir.conexionapirest.data.model.MovieDetail
-import com.unir.conexionapirest.data.model.MovieResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 
-class MovieRepository @Inject constructor() {
+class MovieRemoteRepository @Inject constructor() {
     private val movieApiService: MovieApiService
 
     init {
@@ -29,40 +27,39 @@ class MovieRepository @Inject constructor() {
             .build()
     }
 
-    // Función para hacer la solicitud a la API
-    fun fetchMovies(onSuccess: (List<Movie>) -> Unit, onError: () -> Unit) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val call = movieApiService.getMovies()
-            val movies = call.body()
 
-            withContext(Dispatchers.Main) {
-                if (call.isSuccessful) {
-                    val movieList = movies?.Search ?: emptyList()
-                    onSuccess(movieList)
-                } else {
-                    println("Error: ${call.errorBody()?.string()}")
-                    onError()
-                }
-            }
 
-        }
-    }
-
-    fun fetchByFilter(
+    /**
+     * Recordamos que la API OMDB no tiene un GET/All, y está limitado al número de resultados que devuelve.
+     * SI supera ese límite, sencillamente no devuelve nada.
+     * Para prevenirlo, ponemos una búsqueda por defecto en "main" (por elegir una palabra).
+     *
+     * En un caso real, esto lo intentaríamos gestionar de manera distinta.
+     * Por ejemplo, ordenar por "más populares" y lanzar una petición con ese filtro limitado a 20 resultados
+     * o crear un sistema de paginación para poder al menos manejarlo.
+     * */
+    fun fetchMovies(
         filter: String,
         onSuccess: (List<Movie>) -> Unit,
         onError: () -> Unit
     ) {
+
+        // Establecemos un filtro por defecto si no hay palabra, buscará, por ejemplo "main"
+        var filterCopy = if (filter.isBlank()) "main" else filter
+
+
         CoroutineScope(Dispatchers.IO).launch {
-            val call = movieApiService.getMoviesByFilter(searchTerm = filter)
+            val call = movieApiService.getMovies(searchTerm = filterCopy)
             val movies = call.body()
-            println("Realizando búsqueda con filtro dentro del REpositorio: $movies y $filter")
+            println("Realizando búsqueda con filtro dentro del REpositorio: $movies y $filterCopy")
 
 
             withContext(Dispatchers.Main) {
                 if (call.isSuccessful) {
                     val movieList = movies?.Search ?: emptyList()
-                    onSuccess(movieList)
+
+                    val sortedMovieList =  movieList.sortedByDescending { it.year.toInt() }
+                    onSuccess(sortedMovieList)
                 } else {
                     println("Error: ${call.errorBody()?.string()}")
                     onError()

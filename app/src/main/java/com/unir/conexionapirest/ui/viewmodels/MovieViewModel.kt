@@ -4,19 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.unir.conexionapirest.data.database.MovieApiService
 import com.unir.conexionapirest.data.model.Movie
 import com.unir.conexionapirest.data.model.MovieDetail
-import com.unir.conexionapirest.data.repository.MovieRepository
+import com.unir.conexionapirest.data.repository.MovieRemoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MovieViewModel @Inject constructor(
-    private val movieRepository: MovieRepository
+    private val movieRemoteRepository: MovieRemoteRepository
 ) : ViewModel() {
 
     private val _selectedMovie = MutableLiveData<MovieDetail>() // Change to MovieDetail
@@ -32,7 +29,7 @@ class MovieViewModel @Inject constructor(
         viewModelScope.launch {
             println("Película encontrada Y ACTUALIZADA en el ModelView: ${selectedMovie.value}")
 
-            movieRepository.fetchMovieById(
+            movieRemoteRepository.fetchMovieById(
                 movieId = movieId,
                 onSuccess = { movie ->
                     _selectedMovie.value = movie  // Now it's a MovieDetail
@@ -46,21 +43,11 @@ class MovieViewModel @Inject constructor(
         }
     }
 
-    // Función para hacer la solicitud a la API a través del repositorio
-    fun fetchMovies() {
-        movieRepository.fetchMovies(
-            onSuccess = { movieList ->
-                _movies.value = movieList
-            },
-            onError = {
-                _error.value = true
-            }
-        )
-    }
 
-    fun fetchMoviesByFilter(filter: String) {
+
+    fun fetchMovies(filter: String = "") {
         println("Realizando búsqueda con filtro dentro del ViewMOdel: $filter")
-        movieRepository.fetchByFilter(
+        movieRemoteRepository.fetchMovies(
             filter = filter,
             onSuccess = { movieList ->
                 _movies.value = movieList
@@ -70,7 +57,5 @@ class MovieViewModel @Inject constructor(
             }
         )
     }
-
-
 
 }

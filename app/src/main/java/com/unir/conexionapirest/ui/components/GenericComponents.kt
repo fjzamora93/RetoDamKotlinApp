@@ -1,6 +1,7 @@
 package com.unir.conexionapirest.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.RemoveRedEye
@@ -29,8 +31,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -78,6 +82,11 @@ fun DetailButton(onClick: () -> Unit) {
             .size(56.dp) // Tamaño grande
             .background(MiPaletaDeColores.ParchmentLight, shape = CircleShape) // Fondo con color primario
             .padding(12.dp)
+            .border(
+                width = 0.5.dp,
+                color = MiPaletaDeColores.WoodenDark,
+                shape = CircleShape
+            )
     ) {
         Icon(
             imageVector = Icons.Default.RemoveRedEye, // Ícono de ojo
@@ -87,14 +96,19 @@ fun DetailButton(onClick: () -> Unit) {
     }
 }
 
+
+
+
 @Composable
 fun SearchField(
-    onSearch: (String) -> Unit
+    onSearch: (String) -> Unit,
 ) {
     var searchText by remember { mutableStateOf("") } // Usamos esta variable para manejar el texto internamente
     Row(
         modifier = Modifier
-            .padding(16.dp) // Espaciado alrededor del TextField
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+
     ){
         TextField(
             value = searchText,
@@ -104,15 +118,15 @@ fun SearchField(
             },
             label = { Text("Search") },
             modifier = Modifier
-                .weight(7f)
-                .padding(16.dp) // Espaciado alrededor del TextField
-                .clip(RoundedCornerShape(12.dp)) // Bordes redondeados
-                .background(MiPaletaDeColores.Bronze), // Fondo más suave
+                .weight(8f)
+                .padding(8.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MiPaletaDeColores.Bronze),
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Default.Search, // Ícono de búsqueda
+                    imageVector = Icons.Default.Search,
                     contentDescription = "Search",
-                    tint = MiPaletaDeColores.Gold // Color del ícono ajustado al tema
+                    tint = MiPaletaDeColores.Gold
                 )
             },
             singleLine = true // Para que el campo de texto no se expanda verticalmente
@@ -120,11 +134,18 @@ fun SearchField(
 
         SendButton(
             modifier = Modifier
-                .weight(3f)
-                .padding(16.dp),
+                .weight(2f),
             onClick = {
                 onSearch(searchText) // Llamamos a onSearch cuando se hace clic, pasando el texto actualizado
                 println("Mandando petición contra la base de datos con $searchText")
+            }
+        )
+        ClearButton(
+            modifier = Modifier
+                .weight(2f),
+            onClick = {
+                searchText = ""
+                println("Formulario limpiado")
             }
         )
     }
@@ -138,15 +159,43 @@ fun SendButton(
 ) {
     IconButton(
         modifier = modifier
-            .size(56.dp) // Tamaño más grande para mejorar la interacción
-            .background(MiPaletaDeColores.ParchmentLight, shape = CircleShape) // Fondo con forma circular
-            .padding(12.dp),
+            .size(40.dp) // Tamaño más grande para mejorar la interacción
+            .background(MiPaletaDeColores.ParchmentLight, shape = CircleShape)
+            .border(
+                width = 1.dp,
+                color = MiPaletaDeColores.WoodenDark,
+                shape = CircleShape
+            ),
         onClick = onClick
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Filled.Send, // Icono de flecha de enviar
             contentDescription = "Send", // Descripción del icono
             tint = MiPaletaDeColores.Gold // Puedes ajustar el color si es necesario
+        )
+    }
+}
+
+@Composable
+fun ClearButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+){
+    IconButton(
+        modifier = modifier
+            .size(40.dp)
+            .background(MiPaletaDeColores.ParchmentLight, shape = CircleShape)
+            .border(
+                width = 0.5.dp,
+                color = MiPaletaDeColores.BloodRed,
+                shape = CircleShape
+            ),
+        onClick = onClick
+    ) {
+        Icon(
+            imageVector = Icons.Default.Clear,
+            contentDescription = "Clear",
+            tint = MiPaletaDeColores.BloodRed
         )
     }
 }
@@ -180,16 +229,16 @@ fun HomeButton() {
     IconButton(
         onClick = { navigationViewModel.navigate(ScreensRoutes.MainScreen.route) },
         modifier = Modifier
-            .size(48.dp) // Tamaño del botón
-            .clip(CircleShape) // Forma circular
-            .background(MiPaletaDeColores.Bronze) // Fondo atractivo
-            .padding(8.dp) // Espaciado interno
+            .size(48.dp)
+            .clip(CircleShape)
+            .background(MiPaletaDeColores.Bronze)
+            .padding(8.dp)
     ) {
         Icon(
-            imageVector = Icons.Default.Home, // Flecha hacia atrás
-            contentDescription = "Go Back", // Descripción para accesibilidad
-            tint = MiPaletaDeColores.Gold, // Color del ícono
-            modifier = Modifier.size(24.dp) // Tamaño del ícono
+            imageVector = Icons.Default.Home,
+            contentDescription = "Go Back",
+            tint = MiPaletaDeColores.ParchmentDark,
+            modifier = Modifier.size(24.dp)
         )
     }
 }
