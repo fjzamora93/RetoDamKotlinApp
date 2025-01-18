@@ -2,6 +2,7 @@ package com.unir.conexionapirest.ui.screens
 
 import android.app.Activity
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -36,6 +37,7 @@ import com.unir.conexionapirest.navigation.ScreensRoutes
 import com.unir.conexionapirest.ui.components.BookMarkButton
 import com.unir.conexionapirest.ui.components.CustomHorizontalDivider
 import com.unir.conexionapirest.ui.components.DetailButton
+import com.unir.conexionapirest.ui.components.ErrorSnackBar
 import com.unir.conexionapirest.ui.components.Header
 import com.unir.conexionapirest.ui.components.SearchField
 import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
@@ -63,24 +65,30 @@ fun MainScreen(){
             }
         ) {
             // CONTENIDO DE LA PANTALLA
-            Column {
-                Header(
-                    onMenuClick = {
-                        coroutineScope.launch { drawerState.open() }
-                    },
-                )
+            Box(Modifier.fillMaxSize()){
 
-                Text(
-                    text = "Lista de películas",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MiPaletaDeColores.Gold,
-                    maxLines = 3,
-                )
+                Column {
 
-                MovieList(
-                    Modifier.fillMaxHeight()
-                )
+                    Header(
+                        onMenuClick = {
+                            coroutineScope.launch { drawerState.open() }
+                        },
+                    )
+                    Text(
+                        text = "Lista de películas",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MiPaletaDeColores.Gold,
+                        maxLines = 3,
+                    )
+
+                    MovieList(
+                        Modifier.fillMaxHeight()
+                    )
+                }
+                ErrorSnackBar()
+
             }
+
         }
     }
 }

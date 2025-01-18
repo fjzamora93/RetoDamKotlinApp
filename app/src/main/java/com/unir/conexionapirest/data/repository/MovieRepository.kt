@@ -1,5 +1,6 @@
 package com.unir.conexionapirest.data.repository
 
+import com.unir.conexionapirest.data.model.MovieDetail
 import com.unir.conexionapirest.data.model.MovieResumen
 import com.unir.conexionapirest.data.model.SearchFilter
 import javax.inject.Inject
@@ -28,6 +29,26 @@ class MovieRepository @Inject constructor (
         localMovieRepository.insertFavMovie(movie)
     }
 
+    suspend fun getAllFavMovies(): List<MovieResumen>{
+        return localMovieRepository.getAllFavMovies()
+    }
+
+    suspend fun deleteMovie(movie: MovieResumen){
+        localMovieRepository.deleteFavMovie(movie)
+
+    }
+
+    suspend fun getMovieById(
+        movieId: String,
+        onSuccess: (MovieDetail) -> Unit,
+        onError: () -> Unit
+    ){
+        remoteMovieRepository.fetchMovieById(
+            movieId,
+            onSuccess,
+            onError
+        )
+    }
 
 
 }

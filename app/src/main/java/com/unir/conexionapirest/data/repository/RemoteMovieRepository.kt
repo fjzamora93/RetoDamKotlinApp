@@ -29,7 +29,7 @@ class RemoteMovieRepository @Inject constructor(
             val movies = call.body()
             println("Realizando búsqueda con filtro dentro del REpositorio: $movies y $filter")
             withContext(Dispatchers.Main) {
-                if (call.isSuccessful) {
+                if (call.isSuccessful && filter.title != "error") {
                     val movieList = movies?.Search ?: emptyList()
                     val sortedMovieList =  movieList.sortedByDescending { it.year.toInt() }
                     onSuccess(sortedMovieList)
@@ -62,6 +62,7 @@ class RemoteMovieRepository @Inject constructor(
 
         }
     }
+
 
 
 }

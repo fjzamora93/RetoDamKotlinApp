@@ -22,7 +22,7 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
+        fontSize = 26.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
@@ -56,10 +56,10 @@ val Typography = Typography(
     ),
 
     titleMedium = TextStyle(
-        fontFamily = FontFamily(Font(R.font.antiqua)),
+        fontFamily = FontFamily(Font(R.font.medievalsharp)),
         fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
-        lineHeight = 28.sp,
+        fontSize = 18.sp,
+        lineHeight = 20.sp,
         letterSpacing = 0.15.sp,
         color = MiPaletaDeColores.LeatherAged
     ),

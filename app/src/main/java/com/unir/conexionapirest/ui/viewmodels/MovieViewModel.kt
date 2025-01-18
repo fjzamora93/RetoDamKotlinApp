@@ -8,6 +8,7 @@ import com.unir.conexionapirest.data.model.MovieResumen
 import com.unir.conexionapirest.data.model.MovieDetail
 import com.unir.conexionapirest.data.model.SearchFilter
 import com.unir.conexionapirest.data.repository.LocalMovieRepository
+import com.unir.conexionapirest.data.repository.MovieRepository
 import com.unir.conexionapirest.data.repository.RemoteMovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -15,8 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MovieViewModel @Inject constructor(
-    private val remoteMovieRepository: RemoteMovieRepository,
-    private val movieLocalRepository: LocalMovieRepository
+    private val movieRepository: MovieRepository
 ) : ViewModel() {
 
     private val _selectedMovie = MutableLiveData<MovieDetail>() // Change to MovieDetail
@@ -33,15 +33,15 @@ class MovieViewModel @Inject constructor(
 
     fun fetchMovieById(movieId: String) {
         viewModelScope.launch {
-            remoteMovieRepository.fetchMovieById(
+            movieRepository.getMovieById(
                 movieId = movieId,
                 onSuccess = { movie ->
-                    _selectedMovie.value = movie  // Now it's a MovieDetail
+                    _selectedMovie.value = movie
                     println("Película encontrada Y ACTUALIZADA en el ModelView: ${selectedMovie.value}")
-                    _error.value = false  // Si todo va bien, resetear el error
+                    _error.value = false
                 },
                 onError = {
-                    _error.value = true  // Aquí manejas el error
+                    _error.value = true
                 }
             )
         }
@@ -57,36 +57,44 @@ class MovieViewModel @Inject constructor(
         )
 
         println("Realizando búsqueda con filtro dentro del ViewMOdel: $filter")
-        remoteMovieRepository.fetchMovies(
+        movieRepository.getMovies(
             filter = updatedFilter,
             onSuccess = { movieList ->
                 _movies.value = movieList
+                _error.value = false
+
             },
             onError = {
                 _error.value = true
+                println("Activando el error")
+
             }
         )
     }
 
     fun addMovieToFavorites(movie: MovieResumen) {
         viewModelScope.launch{
-            movieLocalRepository.insertFavMovie(movie)
+            movieRepository.saveMovie(movie)
         }
     }
 
     fun getFavMovies() {
         viewModelScope.launch{
-            val movieList = movieLocalRepository.getAllFavMovies()
+            val movieList = movieRepository.getAllFavMovies()
             _favMovies.value = movieList
         }
     }
 
     fun removeFromFavorites(movie: MovieResumen) {
         viewModelScope.launch {
-            movieLocalRepository.deleteFavMovie(movie)
-            val movieList = movieLocalRepository.getAllFavMovies()
+            movieRepository.deleteMovie(movie)
+            val movieList = movieRepository.getAllFavMovies()
             _favMovies.value = movieList
         }
+    }
+
+    fun clearError(){
+        _error.value = false
     }
 
 }

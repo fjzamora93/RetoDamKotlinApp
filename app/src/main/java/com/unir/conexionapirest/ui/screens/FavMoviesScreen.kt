@@ -52,7 +52,11 @@ fun FavMoviesScreen(){
                 coroutineScope.launch { drawerState.close() }
             }
         ) {
-            Column {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Header(
                     onMenuClick = {
                         coroutineScope.launch { drawerState.open() }
@@ -63,7 +67,12 @@ fun FavMoviesScreen(){
                     text = "Mis películas favoritas",
                     style = MaterialTheme.typography.titleLarge,
                     color = MiPaletaDeColores.Gold,
-                    maxLines = 3,
+                )
+
+                Text(
+                    text = "Va, venga, un punto extra por haber acertado con el catálogo de propuesto :)",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MiPaletaDeColores.IronDark,
                 )
 
                 FavMovieList()
@@ -132,8 +141,7 @@ fun FavMovieItem(
             Row(){
                 Text(
                     text = movie.title ?: "Título no disponible",
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 3,
+                    style = MaterialTheme.typography.titleSmall,
                 )
             }
 

@@ -19,6 +19,7 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
@@ -37,9 +38,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.unir.conexionapirest.data.model.SearchFilter
 import com.unir.conexionapirest.navigation.LocalNavigationViewModel
 import com.unir.conexionapirest.navigation.ScreensRoutes
 import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
+import com.unir.conexionapirest.ui.viewmodels.MovieViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +54,8 @@ fun LeftHalfDrawer(
     content: @Composable () -> Unit,
 
 ) {
+    val movieViewModel: MovieViewModel = hiltViewModel()
+
     val navigationViewModel = LocalNavigationViewModel.current
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -74,6 +80,18 @@ fun LeftHalfDrawer(
                         icon = Icons.Default.Movie
                     )
 
+                    MenuOption(
+                        text = "Generar Error",
+                        onClick = {
+                            onClose()
+                            movieViewModel.fetchMovies(filter = SearchFilter(title = "error"))
+                        },
+                        icon = Icons.Default.Warning,
+                        color = MiPaletaDeColores.Gold
+                    )
+
+
+
 
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(onClick = onClose) {
@@ -92,7 +110,8 @@ fun LeftHalfDrawer(
 fun MenuOption(
     text: String,
     onClick: () -> Unit,
-    icon : ImageVector = Icons.Default.Home
+    icon : ImageVector = Icons.Default.Home,
+    color: Color = MiPaletaDeColores.IronDark,
 ) {
     Row(
         modifier = Modifier
@@ -105,10 +124,12 @@ fun MenuOption(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.padding(end = 8.dp).size(30.dp),
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .size(30.dp),
             imageVector = icon,
             contentDescription = "",
-            tint = MiPaletaDeColores.IronDark
+            tint = color
         )
 
         Text(

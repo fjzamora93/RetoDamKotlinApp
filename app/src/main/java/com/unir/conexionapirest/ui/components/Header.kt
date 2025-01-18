@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -27,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import com.unir.conexionapirest.navigation.LocalNavigationViewModel
 import com.unir.conexionapirest.navigation.NavigationViewModel
 import com.unir.conexionapirest.navigation.ScreensRoutes
+import com.unir.conexionapirest.ui.screens.MenuOption
+import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
 
 @Composable
 fun Header(
@@ -58,7 +61,7 @@ fun Header(
 
             HomeButton()
 
-            // Cerrar la aplicación
+
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = "close app",
