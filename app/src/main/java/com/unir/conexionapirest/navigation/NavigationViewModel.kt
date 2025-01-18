@@ -32,7 +32,7 @@ class NavigationViewModel : ViewModel() {
         _navigationEvent.value = null
     }
 
-    // Nuevo método para navegar hacia atrás
+    // método para navegar hacia atrás
     fun goBack() {
         if (_routeStack.size > 1) {
             var currentRoute = _routeStack.removeAt(_routeStack.size - 1)

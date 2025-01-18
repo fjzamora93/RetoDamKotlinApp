@@ -1,10 +1,8 @@
 package com.unir.conexionapirest.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -12,22 +10,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,17 +29,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.unir.conexionapirest.data.model.Movie
+import com.unir.conexionapirest.data.model.SearchFilter
 import com.unir.conexionapirest.navigation.LocalNavigationViewModel
 import com.unir.conexionapirest.navigation.ScreensRoutes
 import com.unir.conexionapirest.ui.theme.ButtonsModifier
 import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
-import com.unir.conexionapirest.ui.viewmodels.MovieViewModel
 
 @Composable
 fun CustomHorizontalDivider(
@@ -116,7 +106,7 @@ fun DetailButton(onClick: () -> Unit) {
 fun SearchField(
     onSearch: (String) -> Unit,
 ) {
-    var searchText by remember { mutableStateOf("") } // Usamos esta variable para manejar el texto internamente
+    var searchText by remember { mutableStateOf("") }
     Row(
         modifier = Modifier
             .padding(8.dp),
@@ -149,8 +139,7 @@ fun SearchField(
             modifier = Modifier
                 .weight(1f).padding(8.dp),
             onClick = {
-                onSearch(searchText) // Llamamos a onSearch cuando se hace clic, pasando el texto actualizado
-                println("Mandando petición contra la base de datos con $searchText")
+                onSearch(searchText)
             }
         )
 
@@ -209,10 +198,10 @@ fun BackButton() {
         modifier = ButtonsModifier.navigationIcon
     ) {
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack, // Flecha hacia atrás
-            contentDescription = "Go Back", // Descripción para accesibilidad
-            tint = MiPaletaDeColores.Gold, // Color del ícono
-            modifier = Modifier.size(24.dp) // Tamaño del ícono
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = "Go Back",
+            tint = MiPaletaDeColores.Gold,
+            modifier = Modifier.size(24.dp)
         )
     }
 }

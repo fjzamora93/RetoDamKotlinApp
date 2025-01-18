@@ -76,7 +76,3 @@ fun Header(
     }
 }
 
-fun onClickMenu(navigationViewModel: NavigationViewModel){
-    // IMPLEMENTAR FUNCIÓN PARA DESPLEGAR EL LeftHalfDrawer
-//    navigationViewModel.navigate(ScreensRoutes.FavScreen.route)
-}

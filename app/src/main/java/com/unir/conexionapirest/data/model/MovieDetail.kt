@@ -1,8 +1,14 @@
 package com.unir.conexionapirest.data.model
 
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+
+/**Si la petición a la API recupera una sola película en la query,
+ * algo que sucede cuando buscamos por isbnID,
+ * se recuperarán todos los campos que aparecen abajo*/
+@Entity(tableName = "movieDetail")
 data class MovieDetail(
     @PrimaryKey(autoGenerate = false) val imdbID: String,
 

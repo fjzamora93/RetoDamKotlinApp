@@ -7,7 +7,8 @@ import com.unir.conexionapirest.data.database.MovieApiService
 import com.unir.conexionapirest.data.database.MovieDao
 import com.unir.conexionapirest.data.database.MovieDatabase
 import com.unir.conexionapirest.data.repository.LocalMovieRepository
-import com.unir.conexionapirest.data.repository.MovieRemoteRepository
+import com.unir.conexionapirest.data.repository.MovieRepository
+import com.unir.conexionapirest.data.repository.RemoteMovieRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,11 +47,21 @@ object NetworkModule {
         return retrofit.create(MovieApiService::class.java)
     }
 
+    /** INSTANCIA ÚNICA DEL REPOSITORIO UNIFICADO (LOCAL + REMOTO) */
+    @Provides
+    @Singleton
+    fun provideMovieRepository(
+        localMovieRepository: LocalMovieRepository,
+        remoteMovieRepository: RemoteMovieRepository
+    ): MovieRepository {
+        return MovieRepository(localMovieRepository, remoteMovieRepository)
+    }
+
     /** INSTANCIA ÚNICA DEL REPOSITORIO REMOTO */
     @Provides
     @Singleton
-    fun provideMovieRemoteRepository(movieApiService: MovieApiService): MovieRemoteRepository {
-        return MovieRemoteRepository(movieApiService)
+    fun provideMovieRemoteRepository(movieApiService: MovieApiService): RemoteMovieRepository {
+        return RemoteMovieRepository(movieApiService)
     }
 
     /** INSTANCIA ÚNICA DE LA BASE DE DATOS SQLITE LOCAL */

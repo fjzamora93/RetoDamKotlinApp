@@ -38,28 +38,28 @@ val Typography = Typography(
     // Letra normal para el texto
     bodyMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.antiqua)),
-        fontWeight = FontWeight.SemiBold, // Peso ligeramente más grueso para destacar
-        fontSize = 18.sp, // Tamaño mediano para lectura cómoda
-        lineHeight = 26.sp, // Altura de línea más espaciosa para claridad
-        letterSpacing = 0.25.sp, // Separación ligera entre letras
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
+        lineHeight = 26.sp,
+        letterSpacing = 0.25.sp,
         color = MiPaletaDeColores.LeatherAged
     ),
 
     // Letra para títulos pequeños
     titleSmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.medievalsharp)),
-        fontWeight = FontWeight.Bold, // Peso más grueso para resaltar
-        fontSize = 20.sp, // Un poco más grande que bodyMedium
-        lineHeight = 28.sp, // Altura de línea proporcionalmente mayor
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 28.sp,
         letterSpacing = 0.15.sp,
         color = MiPaletaDeColores.LeatherAged
     ),
 
     titleMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.antiqua)),
-        fontWeight = FontWeight.Bold, // Peso más grueso para resaltar
-        fontSize = 20.sp, // Un poco más grande que bodyMedium
-        lineHeight = 28.sp, // Altura de línea proporcionalmente mayor
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 28.sp,
         letterSpacing = 0.15.sp,
         color = MiPaletaDeColores.LeatherAged
     ),

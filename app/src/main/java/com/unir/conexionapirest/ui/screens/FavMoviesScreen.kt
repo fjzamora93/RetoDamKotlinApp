@@ -18,24 +18,19 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.unir.conexionapirest.data.model.Movie
+import com.unir.conexionapirest.data.model.MovieResumen
 import com.unir.conexionapirest.navigation.LocalNavigationViewModel
 import com.unir.conexionapirest.navigation.ScreensRoutes
-import com.unir.conexionapirest.ui.components.BookMarkButton
 import com.unir.conexionapirest.ui.components.CustomHorizontalDivider
 import com.unir.conexionapirest.ui.components.DetailButton
 import com.unir.conexionapirest.ui.components.DislikeButton
 import com.unir.conexionapirest.ui.components.Header
-import com.unir.conexionapirest.ui.components.SearchField
 import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
 import com.unir.conexionapirest.ui.viewmodels.MovieViewModel
 import kotlinx.coroutines.launch
@@ -105,7 +100,7 @@ fun FavMovieList(
 
 @Composable
 fun FavMovieItem(
-    movie: Movie,
+    movie: MovieResumen,
     movieViewModel: MovieViewModel = hiltViewModel()
 ) {
     val navigationViewModel = LocalNavigationViewModel.current

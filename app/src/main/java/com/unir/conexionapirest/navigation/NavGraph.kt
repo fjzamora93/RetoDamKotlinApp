@@ -28,7 +28,6 @@ fun NavGraph(
 
         // Este LaunchedEffect es un OBSERVADOR que se disparará ante cualquier evento de navegación
         LaunchedEffect(navigationEvent) {
-            //println("Navegando a la ruta: $navigationEvent")
             navigationEvent?.let { event ->
                 when (event) {
                     is NavigationEvent.Navigate -> {
