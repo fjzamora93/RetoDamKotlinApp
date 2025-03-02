@@ -1,6 +1,5 @@
 package com.unir.conexionapirest.ui.screens
 
-import android.app.Activity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,20 +16,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -43,9 +36,8 @@ import com.unir.conexionapirest.ui.components.ErrorSnackBar
 import com.unir.conexionapirest.ui.components.Header
 import com.unir.conexionapirest.ui.components.SearchField
 import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
-import com.unir.conexionapirest.ui.theme.TextoApp
+import com.unir.conexionapirest.ui.theme.AppStrings
 import com.unir.conexionapirest.ui.viewmodels.ViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(){
@@ -62,7 +54,7 @@ fun MainScreen(){
             ) {
                 Header()
                 Text(
-                    text = TextoApp.titulo,
+                    text = AppStrings.NAME,
                     style = MaterialTheme.typography.titleLarge,
                     color = MiPaletaDeColores.Gold,
                     maxLines = 3,
@@ -96,7 +88,11 @@ fun ItemList(
         itemsList.let {
             if (it.isEmpty()) {
                 item {
-                    Text("No hay resultados de búsqueda")
+                    Text(
+                        text = "No hay resultados de búsqueda",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Black
+                    )
                 }
             } else {
                 items(it.size) { index ->
@@ -160,7 +156,7 @@ fun ItemResumen(
                 Spacer(modifier = Modifier.height(15.dp).width(15.dp))
 
                 Text(
-                    text = "${TextoApp.campo_3} : ${ item.price.toString() }",
+                    text = "${AppStrings.INFO} : ${ item.price.toString() }",
                     style = MaterialTheme.typography.labelLarge,
                 )
             }

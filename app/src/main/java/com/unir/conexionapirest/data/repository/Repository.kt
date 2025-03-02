@@ -3,6 +3,7 @@ package com.unir.conexionapirest.data.repository
 import com.unir.conexionapirest.data.model.ItemDetails
 import com.unir.conexionapirest.data.service.ApiService
 import com.unir.conexionapirest.data.model.ItemResumen
+import com.unir.conexionapirest.ui.theme.AppStrings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,29 +33,24 @@ class Repository @Inject constructor(
 
             Result.success(sortedList)
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(Exception("Algo salió mal: ${e.message}, imposible conectar a ${AppStrings.BASE_URL}"))
         }
     }
 
 
 
-
-    suspend fun fetchById(
-        id: String,
-        onSuccess: (ItemDetails) -> Unit,
-        onError: () -> Unit
-    ) {
-        val response = apiService.getMovieById(id = id)
-        val itemResponse = response.body()
-        println("Realizando búsqueda con filtro dentro del REpositorio: $itemResponse y $id")
-            if (response.isSuccessful && itemResponse != null) {
-                onSuccess(itemResponse)
-            } else {
-                println("Error: ${response.errorBody()?.string()}")
-                onError()
-            }
-
-
+    suspend fun fetchById(id: String) : Result<ItemDetails> {
+       return try {
+           val response = apiService.getMovieById(id)
+           if (!response.isSuccessful) {
+                return Result.failure(Exception("Error en la respuesta del servidor: ${response.errorBody()?.string()}"))
+           }
+           val itemResponse = response.body()
+               ?: return Result.failure(Exception("NO hay coincidencias de búsqueda"))
+           Result.success(itemResponse)
+       } catch (e: Exception) {
+           Result.failure(Exception("Algo salió mal: ${e.message}, imposible conectar a ${AppStrings.BASE_URL}"))
+       }
     }
 
 

@@ -1,19 +1,19 @@
-# MovieRequestApi - AE-2. Android avanzado
-
-MovieRequestApi es una aplicación que forma parte de la asignatura de PMDM y que toma películas de la API de muestra http://www.omdbapi.com y permite guardar las películas seleccionadas en una base de datos SQLite local.
-
-## Consideraciones sobre la API
-
-La api no devuelve resultados que sean demasiado grandes (y tampoco acepta peticiones para devolver todo el contenido de la base de datos). En su lugar, es obligatorio especificar parámetros que devuelvan un máximo de 600 películas aproximadamente. Superado ese límite, devuelve una lista vacía.
+# RequestApi - AE-3. Examen Android
 
 
 ## Características
 
-- Conexión a API.
-- Base de datos local (utilizando Room).
-- Uso de jetpack-compose.
-- Inyección de dependencias con Hilt y Dagger.
-- Sistema de navegación.
+Para esta actividad se han reutilizado componentes del último ejercicio y se ha tomado como base la arquitectura de la actividad ya entregada de **AE-2. Android avanzado**. Aún así, se han realizado los siguientes ajustes en el código para mejorar su legibilidad y que sea más robusto:
+
+- **Propagación de errores**: Los errores se detectan de forma temprana en el repositorio y se se propagan correctametne hasta las vistas. En caso de que haya algún error con la API, aparecerá un mensaje de error en la interfaz gráfica (por ejemplo, si se escribe mal la URL de la API).
+
+- **Las corrutinas se manejan con ViewModelScope dentro del ViewModel**, por lo tanto, el CorooutineScope y withContext(Dispatchers) desaparecen del repositorio ya que ya no serán necesarios en adelante.
+
+- **Utiilzamos MUtableStateFlow**. FRente al LiveData del ejercicio anterior (el de movies), optamos por utilizar en esta ocasión el MutableStateFlow, lo que  nos obliga a modificar los @Composables para utilizar el collectAsState y así estar atentos a cualquier cambio que se producza en los resultados del ViewModel.
+
+- **La barra de búsqueda arroja resultados en tiempo real**. Ahora los resultados se filtran dentro de la APlicación. No es una solución óptima, pero visualmente da sensación de fluidez a la aplicación, lo que mejora la experiencia de usuario. 
+
+
 
 ## Arquitectura del Proyecto
 
@@ -37,7 +37,7 @@ Además, dentro del proyecto podemos encontrar la siguiente estructura de direct
 
 1. **Clona este repositorio**:
 ```sh
-	https://github.com/fjzamora93/MovieRequestApi
+	git clone https://github.com/fjzamora93/KotlinRequestToApiApp
 ```
 
 2. **Abre el proyecto en Android Studio.**

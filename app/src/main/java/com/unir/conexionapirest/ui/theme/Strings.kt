@@ -1,9 +1,12 @@
 package com.unir.conexionapirest.ui.theme
 
-object TextoApp{
-    val titulo = "LIstado completo"
-    val campo_1 = "Los números"
-    val campo_2 = "Descripcion"
-    val campo_3 = "Más información"
+object AppStrings{
+    val NAME = "LIstado completo"
+    val NUMEROS = "Los números"
+    val DESCRIPTION = "Descripcion"
+    val INFO = "Más información"
+
+    val BASE_URL = "https://peticiones.online/api/"
+
 
 }

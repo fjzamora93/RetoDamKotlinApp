@@ -27,8 +27,8 @@ class ViewModel @Inject constructor(
     private val _filteredList = MutableStateFlow<List<ItemResumen>>(emptyList())
     val filteredList: MutableStateFlow<List<ItemResumen>> get() = _filteredList
 
-    private val _error =MutableLiveData<Boolean>()
-    val error: LiveData<Boolean> = _error
+    private val _error =MutableStateFlow<String?>(null)
+    val error: MutableStateFlow<String?> get() = _error
 
 
     // Nada más iniciar, que la lista filtrada sea la misma que la lista completa
@@ -42,31 +42,32 @@ class ViewModel @Inject constructor(
     fun fetchAll() {
         viewModelScope.launch {
             val result = repository.fetchAll()
-            result.onSuccess { items -> _itemsList.value = items }
-            result.onFailure { _error.value = true }
+            result.onSuccess {
+                _itemsList.value = it
+                _error.value = null
+            }
+            result.onFailure {
+                _error.value = it.message
+            }
         }
     }
 
 
     fun fetchById(id: String) {
         viewModelScope.launch {
-            repository.fetchById(
-                id = id,
-                onSuccess = { item ->
-                    _selectedItem.value = item
-                    println("Película encontrada Y ACTUALIZADA en el ModelView: ${selectedItem.value}")
-                    _error.value = false
-                },
-                onError = {
-                    _error.value = true
-                }
-            )
+            val result = repository.fetchById(id = id)
+            result.onSuccess {
+                _selectedItem.value = it
+                _error.value = null
+            }
+            result.onFailure {
+                _error.value = it.message
+            }
         }
     }
 
     fun filter(filter: String){
         if (filter != "") {
-            println("Realizando búsqueda con filtro dentro del ViewMOdel: $filter")
             _filteredList.value = itemsList.value.filter {
                 it.name.contains(filter, ignoreCase = true)
             }
@@ -76,9 +77,8 @@ class ViewModel @Inject constructor(
         }
     }
 
-
     fun clearError(){
-        _error.value = false
+        _error.value = null
     }
 
 }

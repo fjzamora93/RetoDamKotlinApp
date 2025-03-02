@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.unir.conexionapirest.data.service.ApiService
 import com.unir.conexionapirest.data.repository.Repository
+import com.unir.conexionapirest.ui.theme.AppStrings
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,17 +26,17 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    /** INSTANCIA ÚNICA DE RETROFIT + CONVERTIDOR JSON */
+    /** NYECCIÓN DE DEPENDENCIAS  DE RETROFIT + CONVERTIDOR JSON */
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://peticiones.online/api/")
+            .baseUrl(AppStrings.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    /** INSTANCIA ÚNICA DEL SERVICIO API */
+    /** NYECCIÓN DE DEPENDENCIAS  DEL SERVICIO API (con el retrofit) */
     @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService {
@@ -44,13 +45,11 @@ object NetworkModule {
 
 
 
-    /** INSTANCIA ÚNICA DEL REPOSITORIO REMOTO */
+    /** INYECCIÓN DE DEPENDENCIAS DEL REPOSITORIO (con el servicio API) */
     @Provides
     @Singleton
     fun provideMovieRemoteRepository(apiService: ApiService): Repository {
         return Repository(apiService)
     }
-
-
 
 }

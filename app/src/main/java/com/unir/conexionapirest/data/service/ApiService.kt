@@ -11,16 +11,13 @@ import retrofit2.http.Path
 interface ApiService {
     // URL DE EJEMPLO;:https://peticiones.online/api/
 
-
-    /** La api con la que estamos trabajando no tiene un "all" como tal, por lo que debemos pasar alguna query por defecto*/
     @GET("products/")
     suspend fun getItems(): Response<ApiResponse>
 
 
-
     @GET("products/{id}/")
     suspend fun getMovieById(
-        @Path("id") id: String // Aquí usas @Path en lugar de @Query
+        @Path("id") id: String
     ): Response<ItemDetails>
 
 }

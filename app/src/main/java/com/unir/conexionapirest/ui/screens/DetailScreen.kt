@@ -24,7 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.unir.conexionapirest.ui.components.Header
 import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
-import com.unir.conexionapirest.ui.theme.TextoApp
+import com.unir.conexionapirest.ui.theme.AppStrings
 import com.unir.conexionapirest.ui.theme.Typography
 import com.unir.conexionapirest.ui.viewmodels.ViewModel
 
@@ -77,7 +77,7 @@ fun MovieDetailScreen(
                                 .padding(20.dp)
                         )
                         Text(
-                            text = TextoApp.campo_1,
+                            text = AppStrings.NUMEROS,
                             style = Typography.titleLarge
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -91,7 +91,7 @@ fun MovieDetailScreen(
                         )
 
                         Text(
-                            text = TextoApp.campo_2,
+                            text = AppStrings.DESCRIPTION,
                             style = Typography.titleLarge
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -106,12 +106,12 @@ fun MovieDetailScreen(
                         )
 
                         Text(
-                            text = TextoApp.campo_3,
+                            text = AppStrings.INFO,
                             style = Typography.titleLarge
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = itemDetails!!.category,
+                            text = itemDetails?.category ?: "No Category",
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.Black
                         )

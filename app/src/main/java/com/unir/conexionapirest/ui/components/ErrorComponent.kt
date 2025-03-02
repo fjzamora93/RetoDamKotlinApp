@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -32,8 +33,8 @@ import com.unir.conexionapirest.ui.viewmodels.ViewModel
 fun ErrorSnackBar(
     viewModel: ViewModel = hiltViewModel(),
 ){
-    val errorState by viewModel.error.observeAsState(false)
-    if (errorState) {
+    val errorState by viewModel.error.collectAsState()
+    if (errorState != null) {
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -66,10 +67,7 @@ fun ErrorSnackBar(
                     Text(
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onError,
-                        text= "Simulación de un error. En caso de que suceda algún error durante" +
-                                "el fetch a la API, se disparará este SnackBar simulando un mensaje de error." +
-                                "QUeda pendiente manejor los errores no solo al hacer peticiones a la API, " +
-                                "sino también en el tratamiento de la base de datos local."
+                        text= errorState.toString()
                     )
                 }
 
