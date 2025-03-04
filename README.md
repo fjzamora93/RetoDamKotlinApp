@@ -41,7 +41,7 @@ Además, dentro del proyecto podemos encontrar la siguiente estructura de direct
 
 1. **Clona este repositorio**:
 ```sh
-	git clone https://github.com/fjzamora93/KotlinRequestToApiApp
+	git clone https://github.com/fjzamora93/KotlinRequestApp
 ```
 
 2. **Abre el proyecto en Android Studio.**
