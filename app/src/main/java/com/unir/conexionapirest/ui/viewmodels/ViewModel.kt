@@ -1,7 +1,5 @@
 package com.unir.conexionapirest.ui.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.unir.conexionapirest.data.model.ItemResumen
@@ -41,7 +39,7 @@ class ViewModel @Inject constructor(
 
     fun fetchAll() {
         viewModelScope.launch {
-            val result = repository.fetchAll()
+            val result = repository.fetchData()
             result.onSuccess {
                 _itemsList.value = it
                 _error.value = null

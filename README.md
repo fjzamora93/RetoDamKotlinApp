@@ -3,7 +3,7 @@
 
 ## Características
 
-Para esta actividad se han reutilizado componentes del último ejercicio y se ha tomado como base la arquitectura de la actividad ya entregada de **AE-2. Android avanzado**. Aún así, se han realizado los siguientes ajustes en el código para mejorar su legibilidad y que sea más robusto:
+Para esta actividad se ha utilizado de base el material visto en clase (reutilizando algunos componentes) y se han realizado los siguientes ajustes en el código para mejorar su legibilidad y que sea más robusto:
 
 - **Propagación de errores**: Los errores se detectan de forma temprana en el repositorio y se se propagan correctametne hasta las vistas. En caso de que haya algún error con la API, aparecerá un mensaje de error en la interfaz gráfica (por ejemplo, si se escribe mal la URL de la API).
 
@@ -21,10 +21,14 @@ El proyecto está estructurado utilizando la arquitectura MVVM(Modelo-Vista-Vist
 
 Además, dentro del proyecto podemos encontrar la siguiente estructura de directorios:
 
-- **data**: Incluye los servicios, modelos, modelos DAO y repositorios. Al hacer esta separación, nos aseguramos el principio de responsabilidad única de cada clase.
+- **data**: Incluye los modelos utilizados, tanto de respuesta de la API como los objetos que se esperan recibir.
+
 - **inyección de dependencias**: Para mantener una estructura más limpia y clara dentro del proyecto aplicamos una inyección de dependencias con Hilt y dagger.
+
 - **navigation**: Creamos un sistema de rutas y navegación a través de un gráfico de navegación.
+
 - **ui**: Todo lo relacionado con la interfaz de usuario (screens, componentes auxilares, tema y ViewModel).
+
 - **viewmodels**: Actúa como capa intermediar entre los repositorios y la interfaz de usuaria, aplicando la lógica de negocio y funcionando como un controlador.
 
 

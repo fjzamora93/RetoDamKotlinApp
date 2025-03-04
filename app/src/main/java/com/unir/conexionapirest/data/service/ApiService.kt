@@ -7,9 +7,9 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 
+/** Retrofit, con la URL está configurado en la INyección de dependencias URL DE EJEMPLO;:http://peticiones.online/images/products/ */
 @Dao
 interface ApiService {
-    // URL DE EJEMPLO;:https://peticiones.online/api/
 
     @GET("products/")
     suspend fun getItems(): Response<ApiResponse>

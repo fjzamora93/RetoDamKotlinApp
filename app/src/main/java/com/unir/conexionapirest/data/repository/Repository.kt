@@ -1,13 +1,10 @@
 package com.unir.conexionapirest.data.repository
 
+import android.util.Log
 import com.unir.conexionapirest.data.model.ItemDetails
 import com.unir.conexionapirest.data.service.ApiService
 import com.unir.conexionapirest.data.model.ItemResumen
 import com.unir.conexionapirest.ui.theme.AppStrings
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**CAPA LÓGICA DE ACCESO A BASE DE DATOS REMOTA*/
@@ -16,7 +13,7 @@ class Repository @Inject constructor(
 ) {
 
 
-    suspend fun fetchAll(): Result<List<ItemResumen>> {
+    suspend fun fetchData(): Result<List<ItemResumen>> {
         return try {
             val response = apiService.getItems()
 
@@ -29,6 +26,7 @@ class Repository @Inject constructor(
                 return Result.failure(Exception("No se encontraron resultados para la búsqueda"))
             }
 
+            Log.v( "Respuesta: ","$itemsResponse")
             val sortedList = itemsResponse!!.results.sortedByDescending { it.price.toInt() }
 
             Result.success(sortedList)

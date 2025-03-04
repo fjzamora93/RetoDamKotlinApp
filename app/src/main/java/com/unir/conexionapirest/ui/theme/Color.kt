@@ -14,14 +14,14 @@ object MiPaletaDeColores {
     val ParchmentDark = Color(0xFFF5DEB3)  // Pergamino envejecido
 
     // Colores metálicos
-    val Gold = Color(0xFFDAA520)  // Dorado brillante
-    val Bronze = Color(0xFFCD7F32)  // Bronce antiguo
+    val Gold = Color(0xFF6A0DAD)  // Dorado brillante
+    val Bronze = Color(0xFF6650a4)  // Bronce antiguo
     val SteelGray = Color(0xFFB0C4DE)  // Gris acero
     val IronDark = Color(0xFF4B4B4B)  // Hierro oscuro
 
     // Colores de cuero
     val LeatherBrown = Color(0xFF654321)  // Marrón cuero
-    val LeatherAged = Color(0xFF402A18)  // Cuero envejecido
+    val LeatherAged = Color(0xFF654321)  // Cuero envejecido
 
     // Colores de naturaleza
     val ForestGreen = Color(0xFF228B22)  // Verde bosque
