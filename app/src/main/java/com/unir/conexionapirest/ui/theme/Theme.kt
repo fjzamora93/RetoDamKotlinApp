@@ -12,15 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = MiPaletaDeColores.Purple80,
-    secondary = MiPaletaDeColores.PurpleGrey80,
-    tertiary = MiPaletaDeColores.Pink80
+//    primary = CustomColors.Purple80,
+//    secondary = CustomColors.PurpleGrey80,
+//    tertiary = CustomColors.Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = MiPaletaDeColores.Purple40,
-    secondary = MiPaletaDeColores.PurpleGrey40,
-    tertiary = MiPaletaDeColores.Pink40
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -52,7 +50,6 @@ fun ConexionApiRestTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
         content = content
     )
 }

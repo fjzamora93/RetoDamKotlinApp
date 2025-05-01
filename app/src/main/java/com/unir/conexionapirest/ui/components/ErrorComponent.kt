@@ -26,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
+import com.unir.conexionapirest.ui.theme.CustomColors
 import com.unir.conexionapirest.ui.viewmodels.ViewModel
 
 @Composable
@@ -58,7 +58,7 @@ fun ErrorSnackBar(
                     Icon(
                         imageVector = Icons.Default.Warning,
                         contentDescription = "Ícono de advertencia",
-                        tint = MiPaletaDeColores.Gold,
+                        tint = CustomColors.Gold,
                         modifier = Modifier.size(30.dp)
                     )
 

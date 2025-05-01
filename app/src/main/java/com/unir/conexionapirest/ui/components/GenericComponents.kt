@@ -33,13 +33,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.unir.conexionapirest.navigation.LocalNavigationViewModel
 import com.unir.conexionapirest.navigation.ScreensRoutes
 import com.unir.conexionapirest.ui.theme.ButtonsModifier
-import com.unir.conexionapirest.ui.theme.MiPaletaDeColores
+import com.unir.conexionapirest.ui.theme.CustomColors
 import com.unir.conexionapirest.ui.viewmodels.ViewModel
 
 @Composable
 fun CustomHorizontalDivider(
     modifier: Modifier = Modifier,
-    color: Color = MiPaletaDeColores.Bronze,
+    color: Color = CustomColors.Bronze,
     thickness: Dp = 4.dp,
 ) {
     HorizontalDivider(
@@ -59,7 +59,7 @@ fun DetailButton(onClick: () -> Unit) {
         Icon(
             imageVector = Icons.Default.RemoveRedEye,
             contentDescription = "View Details",
-            tint = MiPaletaDeColores.LeatherAged
+            tint = CustomColors.LeatherAged
         )
     }
 }
@@ -87,12 +87,12 @@ fun SearchField(
                 .weight(5f)
                 .padding(8.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(MiPaletaDeColores.Bronze),
+                .background(CustomColors.Bronze),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = "Search",
-                    tint = MiPaletaDeColores.Gold
+                    tint = CustomColors.Gold
                 )
             },
             singleLine = true
@@ -123,7 +123,7 @@ fun ClearButton(
         Icon(
             imageVector = Icons.Default.Clear,
             contentDescription = "Clear",
-            tint = MiPaletaDeColores.BloodRed
+            tint = CustomColors.BloodRed
         )
     }
 }
@@ -140,14 +140,14 @@ fun HomeButton() {
         modifier = Modifier
             .size(48.dp)
             .clip(CircleShape)
-            .background(MiPaletaDeColores.Bronze)
+            .background(CustomColors.Bronze)
             .padding(8.dp)
 
     ) {
         Icon(
             imageVector = Icons.Default.Home,
             contentDescription = "Go Back",
-            tint = MiPaletaDeColores.ParchmentDark,
+            tint = CustomColors.ParchmentDark,
             modifier = Modifier.size(24.dp)
         )
     }

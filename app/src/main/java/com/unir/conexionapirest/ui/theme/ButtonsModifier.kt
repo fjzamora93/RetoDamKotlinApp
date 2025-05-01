@@ -13,15 +13,15 @@ object ButtonsModifier {
 
     val regularIcon = Modifier
         .size(40.dp)
-        .background(MiPaletaDeColores.ParchmentLight)
+        .background(CustomColors.ParchmentLight)
         .border(
             width = 1.dp,
-            color = MiPaletaDeColores.WoodenDark,
+            color = CustomColors.WoodenDark,
             shape = RectangleShape)
 
     val navigationIcon = Modifier
         .size(40.dp)
-        .background(MiPaletaDeColores.PurpleGrey80, shape = CircleShape)
+        .background(CustomColors.PurpleGrey80, shape = CircleShape)
         .padding(10.dp)
 
 }

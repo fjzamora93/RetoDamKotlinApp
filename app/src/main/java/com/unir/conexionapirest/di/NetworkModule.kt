@@ -2,6 +2,9 @@ package com.unir.conexionapirest.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.roleapp.auth.security.AuthInterceptor
 import com.unir.conexionapirest.data.service.ApiService
 import com.unir.conexionapirest.data.repository.Repository
 import com.unir.conexionapirest.ui.theme.AppStrings
@@ -10,8 +13,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
@@ -26,30 +32,39 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    /** NYECCIÓN DE DEPENDENCIAS  DE RETROFIT + CONVERTIDOR JSON */
-    @Provides
+    private const val BASE_URL = "https://retodam-production.up.railway.app/api/"
+
     @Singleton
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(AppStrings.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+    @Provides
+    fun provideGsonBuilder(): Gson {
+        return GsonBuilder().create()
+    }
+    /** NYECCIÓN DE DEPENDENCIAS  DE RETROFIT + CONVERTIDOR JSON */
+
+    // Incluimos el AUthInterceptor (que está dentro del package com.auth.di.AuthModule) para que pueda añadir el token a cada petición
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        return OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .addInterceptor(authInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
     }
 
-    /** NYECCIÓN DE DEPENDENCIAS  DEL SERVICIO API (con el retrofit) */
-    @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiService {
-        return retrofit.create(ApiService::class.java)
+    @Provides
+    fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okHttpClient)
+            .build()
     }
 
-
-
-    /** INYECCIÓN DE DEPENDENCIAS DEL REPOSITORIO (con el servicio API) */
-    @Provides
-    @Singleton
-    fun provideMovieRemoteRepository(apiService: ApiService): Repository {
-        return Repository(apiService)
-    }
 
 }

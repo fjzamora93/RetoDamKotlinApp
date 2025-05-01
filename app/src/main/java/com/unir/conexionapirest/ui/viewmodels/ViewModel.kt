@@ -1,9 +1,11 @@
 package com.unir.conexionapirest.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.unir.conexionapirest.data.model.ItemResumen
-import com.unir.conexionapirest.data.model.ItemDetails
+import com.unir.conexionapirest.data.model.Solicitud
+import com.unir.conexionapirest.data.model.UserModel
+import com.unir.conexionapirest.data.model.Vacante
 import com.unir.conexionapirest.data.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,62 +18,79 @@ class ViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 
-    private val _selectedItem = MutableStateFlow<ItemDetails?>(null)
-    val selectedItem: StateFlow<ItemDetails?> = _selectedItem
+    private val _solicitudes = MutableStateFlow<List<Solicitud>>(emptyList())
+    val solicitudes: MutableStateFlow<List<Solicitud>> get() = _solicitudes
 
-    private val _itemsList = MutableStateFlow<List<ItemResumen>>(emptyList())
-    val itemsList: MutableStateFlow<List<ItemResumen>> get() = _itemsList
 
-    private val _filteredList = MutableStateFlow<List<ItemResumen>>(emptyList())
-    val filteredList: MutableStateFlow<List<ItemResumen>> get() = _filteredList
+    private val _vacantes = MutableStateFlow<List<Vacante>>(emptyList())
+    val vacantes: MutableStateFlow<List<Vacante>> get() = _vacantes
+
+    private val _filteredVacantes = MutableStateFlow<List<Vacante>>(emptyList())
+    val filteredVacantes: MutableStateFlow<List<Vacante>> get() = _filteredVacantes
 
     private val _error =MutableStateFlow<String?>(null)
     val error: MutableStateFlow<String?> get() = _error
 
+    private val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> get() = _loading
 
-    // Nada más iniciar, que la lista filtrada sea la misma que la lista completa
+
     init {
-        viewModelScope.launch {
-            _itemsList.collect { items -> _filteredList.value = items
-            }
-        }
+        fetchVacantes()
     }
 
-    fun fetchAll() {
+    fun fetchVacantes() {
         viewModelScope.launch {
-            val result = repository.fetchData()
+            _loading.value = true
+            val result = repository.fetchVacantes()
             result.onSuccess {
-                _itemsList.value = it
+                _vacantes.value = it
                 _error.value = null
             }
             result.onFailure {
                 _error.value = it.message
             }
+            _filteredVacantes.value = vacantes.value
+
+            _loading.value = false
         }
     }
 
-
-    fun fetchById(id: String) {
+    fun fetchSolicitudes(userId: Int) {
         viewModelScope.launch {
-            val result = repository.fetchById(id = id)
+            _loading.value = true
+            val result = repository.fetchSolicitudes(userId)
             result.onSuccess {
-                _selectedItem.value = it
+                _solicitudes.value = it
                 _error.value = null
             }
             result.onFailure {
                 _error.value = it.message
             }
+            _loading.value = false
         }
     }
+
+
+    fun addSolicitud(
+        solicitud: Solicitud,
+    ) {
+        viewModelScope.launch {
+            Log.d("Solicitud", solicitud.user.id.toString())
+            repository.addSolicitud(solicitud)
+        }
+    }
+
+
 
     fun filter(filter: String){
         if (filter != "") {
-            _filteredList.value = itemsList.value.filter {
-                it.name.contains(filter, ignoreCase = true)
+            _filteredVacantes.value = vacantes.value.filter {
+                it.nombre.contains(filter, ignoreCase = true)
             }
-            println(filteredList.value)
+            println(filteredVacantes.value)
         } else {
-            _filteredList.value = itemsList.value
+            _filteredVacantes.value = vacantes.value
         }
     }
 

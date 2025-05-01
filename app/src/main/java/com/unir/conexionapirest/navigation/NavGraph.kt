@@ -5,13 +5,16 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.unir.conexionapirest.ui.screens.MainScreen
-import com.unir.conexionapirest.ui.screens.MovieDetailScreen
+import com.unir.conexionapirest.ui.screens.LoginScreen
+import com.unir.conexionapirest.ui.screens.SolicitudesScreen
+
+import com.unir.conexionapirest.ui.screens.VacantesScreen
+import com.unir.conexionapirest.ui.screens.UserProfileScreen
+import com.unir.conexionapirest.ui.viewmodels.AuthViewModel
 
 
 @Composable
@@ -20,8 +23,14 @@ fun NavGraph(
 ) {
     // Proveer el NavigationViewModel en todo el árbol de composables dentro de NavGraph
     val navigationViewModel: NavigationViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
 
-    CompositionLocalProvider(LocalNavigationViewModel provides navigationViewModel) {
+    CompositionLocalProvider(
+        LocalNavigationViewModel provides navigationViewModel,
+        LocalAuthViewModel provides authViewModel,
+
+
+        ) {
         // Declaramos el objeto que va a ser observado
         val navigationEvent by navigationViewModel.navigationEvent.observeAsState()
 
@@ -52,23 +61,17 @@ fun NavGraph(
         // DEFINICIÓN DE LAS RUTAS DE CADA PANTALLA
         NavHost(
             navController = navController,
-            startDestination = ScreensRoutes.MainScreen.route
+            startDestination = ScreensRoutes.LoginScreen.route
         ) {
 
-            // Pantalla principal
-            composable(ScreensRoutes.MainScreen.route) {
-                MainScreen()
-            }
+            composable(ScreensRoutes.UserScreen.route) { UserProfileScreen() }
+            composable(ScreensRoutes.LoginScreen.route) { LoginScreen() }
+            composable(ScreensRoutes.VacantesScreen.route) { VacantesScreen() }
+            composable(ScreensRoutes.SolicitudesScreen.route) { SolicitudesScreen() }
 
 
-            // Pantalla de detalles
-            composable(
-                ScreensRoutes.DetailScreen.route,
-                arguments = listOf(navArgument("movieID") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val movieId = backStackEntry.arguments?.getString("movieID") ?: "0"
-                MovieDetailScreen(id = movieId)
-            }
+
+
         }
     }
 }
