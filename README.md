@@ -1,17 +1,24 @@
-# RequestApi - AE-3. Examen Android
+# RetoDAM - PMDM
+
+Para este proyecto se ha optado por una versión minimalista de los requisitos, aunque incluye las funcionalidades básicas:
+
+- **Registro de usuarios**: los usuarios pueden registrar una nueva cuenta o pueden hacer login con una cuenta ya existente. En cualquiera de los dos casos, el usuario recibirá un token que se utilizará en adelante para realizar las peticiones.
+
+- **Acceso a las vacantes disponibles**: en la segunda pantalla encontraremos un listado con todas las vacantes disponibles. Se incluye una barra de búsqueda para poder realizar un filtro básico. Al pulsar el icono "+", se podrá añadir un comentario (simulando lo que sería una postulación completa) y se enviará una request de método POST al backend para añadir una nueva solicitud a la vacante. Para un desarrollo completo, sería necesario introducir todos los campos del formulario, aunque este sirve de muestra para ver cómo se comporta.
+
+-**SOlicitudes**: en esta pantalla el usuario puede ver todas las solicitudes asociadas a su cuenta. POdría mejorarse con la opción de editar dichas solicitudes o eliminarlas.
 
 
 ## Características
 
-Para esta actividad se ha utilizado de base el material visto en clase (reutilizando algunos componentes) y se han realizado los siguientes ajustes en el código para mejorar su legibilidad y que sea más robusto:
 
 - **Propagación de errores**: Los errores se detectan de forma temprana en el repositorio y se se propagan correctametne hasta las vistas. En caso de que haya algún error con la API, aparecerá un mensaje de error en la interfaz gráfica (por ejemplo, si se escribe mal la URL de la API).
 
 - **Las corrutinas se manejan con ViewModelScope dentro del ViewModel**, por lo tanto, el CorooutineScope y withContext(Dispatchers) desaparecen del repositorio ya que ya no serán necesarios en adelante.
 
-- **Utiilzamos MUtableStateFlow**. FRente al LiveData del ejercicio anterior (el de movies), optamos por utilizar en esta ocasión el MutableStateFlow, lo que  nos obliga a modificar los @Composables para utilizar el collectAsState y así estar atentos a cualquier cambio que se producza en los resultados del ViewModel.
+- **Utiilzamos MUtableStateFlow**. FRente al LiveData del ejercicio anterior, optamos por utilizar en esta ocasión el MutableStateFlow, lo que  nos obliga a modificar los @Composables para utilizar el collectAsState y así estar atentos a cualquier cambio que se producza en los resultados del ViewModel.
 
-- **La barra de búsqueda arroja resultados en tiempo real**. Ahora los resultados se filtran dentro de la APlicación. No es una solución óptima, pero visualmente da sensación de fluidez a la aplicación, lo que mejora la experiencia de usuario. 
+- **La barra de búsqueda arroja resultados en tiempo real**. Ahora los resultados se filtran dentro de la APlicación. 
 
 
 
@@ -23,7 +30,7 @@ Además, dentro del proyecto podemos encontrar la siguiente estructura de direct
 
 - **data**: Incluye los modelos utilizados, tanto de respuesta de la API como los objetos que se esperan recibir.
 
-- **inyección de dependencias**: Para mantener una estructura más limpia y clara dentro del proyecto aplicamos una inyección de dependencias con Hilt y dagger.
+- **inyección de dependencias(di)**: Para mantener una estructura más limpia y clara dentro del proyecto aplicamos una inyección de dependencias con Hilt y dagger.
 
 - **navigation**: Creamos un sistema de rutas y navegación a través de un gráfico de navegación.
 
@@ -41,7 +48,7 @@ Además, dentro del proyecto podemos encontrar la siguiente estructura de direct
 
 1. **Clona este repositorio**:
 ```sh
-	git clone https://github.com/fjzamora93/KotlinRequestApp
+	https://github.com/fjzamora93/RetoDamKotlinApp
 ```
 
 2. **Abre el proyecto en Android Studio.**
