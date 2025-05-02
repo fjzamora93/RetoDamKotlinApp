@@ -1,7 +1,7 @@
 package com.unir.conexionapirest.data.model
 
 data class UserModel(
-    val id: Long? = null,
+    val id: Int? = null,
     var name: String,
     var surname: String,
     var email: String,

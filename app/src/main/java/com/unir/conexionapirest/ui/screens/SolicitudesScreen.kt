@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -73,13 +74,21 @@ fun SolicitudesScreen(){
 
 @Composable
 fun SolicitudesList(
-    viewModel: ViewModel = hiltViewModel()
-) {
+    viewModel: ViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = LocalAuthViewModel.current,
+
+    ) {
     val itemsList by viewModel.solicitudes.collectAsState()
     val isLoading by viewModel.loading.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    SearchField()
+    val userState by authViewModel.userState.collectAsState()
+    val user = (userState as UserState.Success).user
+
+
+    LaunchedEffect(itemsList){
+        viewModel.fetchSolicitudes(user.id ?: 1)
+    }
 
     Column(
         modifier = Modifier.fillMaxWidth().padding(16.dp),

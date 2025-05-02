@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,10 +31,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import com.unir.conexionapirest.navigation.LocalAuthViewModel
 import com.unir.conexionapirest.navigation.LocalNavigationViewModel
 import com.unir.conexionapirest.navigation.NavigationViewModel
 import com.unir.conexionapirest.navigation.ScreensRoutes
 import com.unir.conexionapirest.ui.theme.CustomColors
+import com.unir.conexionapirest.ui.viewmodels.AuthViewModel
+import com.unir.conexionapirest.ui.viewmodels.UserState
 
 import kotlinx.coroutines.launch
 
@@ -45,15 +49,22 @@ import kotlinx.coroutines.launch
  * */
 @Composable
 fun MainLayout(
+    authViewModel: AuthViewModel = LocalAuthViewModel.current,
+
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable () -> Unit,
-){
+    ){
 
     val nav: NavigationViewModel = LocalNavigationViewModel.current
+
+    val userState by authViewModel.userState.collectAsState()
+
 
     var selectedItem by remember { mutableStateOf(0) }
 
     val items = listOf("Perfil", "Vacantes", "Solicitudes")
+
+
 
     Scaffold(
         floatingActionButton = floatingActionButton,
@@ -64,39 +75,42 @@ fun MainLayout(
                 contentColor = Color.Black,
                 tonalElevation = 4.dp
             ) {
-                items.forEachIndexed { index, item ->
-                    NavigationBarItem(
-                        selected = selectedItem == index,
-                        onClick = {
-                            selectedItem = index
-                            when (item) {
-                                "Perfil" -> {
-                                    // Navegar a la pantalla de perfil cuando se hace clic en el ícono de "Profile"
-                                    nav.navigate(ScreensRoutes.UserScreen.route)
+                if (userState is UserState.Success) {
+                    items.forEachIndexed { index, item ->
+                        NavigationBarItem(
+                            selected = selectedItem == index,
+                            onClick = {
+
+                                selectedItem = index
+                                when (item) {
+                                    "Perfil" -> {
+                                        nav.navigate(ScreensRoutes.UserScreen.route)
+                                    }
+
+                                    "Solicitudes" -> {
+                                        nav.navigate(ScreensRoutes.SolicitudesScreen.route)
+                                    }
+
+                                    "Vacantes" -> {
+                                        nav.navigate(ScreensRoutes.VacantesScreen.route)
+                                    }
+
                                 }
-                                "Solicitudes" -> {
-                                    // Aquí también puedes definir una navegación para la pantalla Home si es necesario
-                                    nav.navigate(ScreensRoutes.SolicitudesScreen.route)
-                                }
-                                "Vacantes" -> {
-                                    // Y lo mismo para la pantalla de búsqueda
-                                    nav.navigate(ScreensRoutes.VacantesScreen.route)
-                                }
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = when (item) {
-                                    "Perfil" -> Icons.Default.Person
-                                    "Vacantes" -> Icons.Default.Search
-                                    "Solicitudes" -> Icons.Default.BookmarkAdded
-                                    else -> Icons.Default.Home
-                                },
-                                contentDescription = item
-                            )
-                        },
-                        label = { Text(item) }
-                    )
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = when (item) {
+                                        "Perfil" -> Icons.Default.Person
+                                        "Vacantes" -> Icons.Default.Search
+                                        "Solicitudes" -> Icons.Default.BookmarkAdded
+                                        else -> Icons.Default.Home
+                                    },
+                                    contentDescription = item
+                                )
+                            },
+                            label = { Text(item) }
+                        )
+                    }
                 }
             }
         }

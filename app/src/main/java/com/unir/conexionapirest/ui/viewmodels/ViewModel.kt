@@ -68,6 +68,7 @@ class ViewModel @Inject constructor(
                 _error.value = it.message
             }
             _loading.value = false
+            Log.d("Solicitudes", "sOLICITUDES EN EL VIEWMODEL:${solicitudes.value.toString()}")
         }
     }
 
