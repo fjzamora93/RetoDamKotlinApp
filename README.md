@@ -20,6 +20,8 @@ Para este proyecto se ha optado por una versión minimalista de los requisitos, 
 
 - **La barra de búsqueda arroja resultados en tiempo real**. Ahora los resultados se filtran dentro de la APlicación. 
 
+- **Permisos**: dentro del ANdroidManifest han quedado configurados los permisos para poder enviar y recibir tokens además de permitir la conexión a internet.
+
 
 
 ## Arquitectura del Proyecto
@@ -28,21 +30,187 @@ El proyecto está estructurado utilizando la arquitectura MVVM(Modelo-Vista-Vist
 
 Además, dentro del proyecto podemos encontrar la siguiente estructura de directorios:
 
-- **data**: Incluye los modelos utilizados, tanto de respuesta de la API como los objetos que se esperan recibir.
+### **data** 
 
-- **inyección de dependencias(di)**: Para mantener una estructura más limpia y clara dentro del proyecto aplicamos una inyección de dependencias con Hilt y dagger.
+Incluye los modelos utilizados, tanto de respuesta de la API como los objetos que se esperan recibir. Para ello se utilizan data class básicos, sin establecer relaciones complejas ni relaciones, algo que idealmente podríamos hacer si quisiéramos hacer el almacenamiento interno en el dispositivo en una base de datos Sqlite a través de Room.
 
-- **navigation**: Creamos un sistema de rutas y navegación a través de un gráfico de navegación.
+### **inyección de dependencias(di)**
 
-- **ui**: Todo lo relacionado con la interfaz de usuario (screens, componentes auxilares, tema y ViewModel).
+Para mantener una estructura más limpia y clara dentro del proyecto aplicamos una inyección de dependencias con Hilt y dagger. Para ello se ha creado un módulo de inyección de dependencias. Idealmente, debería crearse un módulo para cada responsabilidad (uno para la inyeccion de repositorys, otro para servicios, etc). Sin embargo, por simplificar el código, todas las dependencias están en el mismo fichero tal que así:
 
-- **viewmodels**: Actúa como capa intermediar entre los repositorios y la interfaz de usuaria, aplicando la lógica de negocio y funcionando como un controlador.
+
+```
+
+@Module
+@InstallIn(SingletonComponent::class)
+object AppModule {
+
+    @Singleton
+    @Provides
+    fun provideAuthApiService(retrofit: Retrofit): AuthApiService {
+        return retrofit.create(AuthApiService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideApiService(retrofit: Retrofit): ApiService {
+        return retrofit.create(ApiService::class.java)
+    }
+
+```
+
+### Retrofit
+
+La configuración de retrofit está dentro del módulo de inyección de dependencias, y su uso se extrapola a las peticiones https dentro de los repositorios y el servicio.
+
+```
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
+
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient {
+        val logging = HttpLoggingInterceptor()
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+        return OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .addInterceptor(authInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+    }
+    
+    @Singleton
+    @Provides
+    fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okHttpClient)
+            .build()
+    }
+
+
+}
+
+```
+
+### REpository
+
+Capa encargada de realizar las peticiones al servicio y manejar la lógica de los casos de error y éxito. Si, además, tuviésemos una lógica compleja, podríamos declarar una capa entre el REpository y los Viewmodels para manejar esa lógica adicional. NO es necesario utilizar dispatchers ni mantener operaciones asíncronas ya que estas se manejan desde el ViewMOdel, aún así, si quisiéramos gestionar el repository de manera asíncrona, podríamos hacerlo de esta manera:
+
+
+```
+class Repository @Inject constructor(
+    private val apiService: ApiService,
+    ) {
+
+
+    fun fetchVacantesAsync(): Deferred<Result<List<Vacante>>> {
+	    return CoroutineScope(Dispatchers.IO).async {
+		try {
+		    val response = apiService.getVacantes()
+		    if (!response.isSuccessful) {
+		        return@async Result.failure(Exception("Error en la respuesta del servidor: ${response.errorBody()?.string()}"))
+		    }
+
+		    val vacantes = response.body()
+		    if (vacantes != null) {
+		        Result.success(vacantes)
+		    } else {
+		        Result.failure(Exception("Respuesta exitosa pero cuerpo vacío."))
+		    }
+		} catch (e: Exception) {
+		    Result.failure(Exception("Algo salió mal: ${e.message}, imposible conectar a ${AppStrings.BASE_URL}"))
+		}
+	    }
+    }
+}
+
+```
+Como comentábamos anteriormente, en nuestro caso hemos optado por otra solución que es una suspend fun y crear la corrutina dentro del viewmodel con viewMOdelScope.launch { // lógica del viewmodel }
+
+
+### SErvicio
+
+Esta es la capa que utilizará directamente a retrofit para lanzar peticiones https a la API. GRacias a la inyección de dependencias, neustra capa del servicio se queda completamente limpia:
+
+
+```
+interface ApiService {
+
+    @GET("vacantes")
+    suspend fun getVacantes(): Response<List<Vacante>>
+
+    @GET("solicitudes/{id}")
+    suspend fun getSolicitudes(@Path("id") userId: Int): Response<List<Solicitud>>
+
+    @POST("solicitudes")
+    suspend fun addSolicitud(@Body solicitud: Solicitud): Response<Solicitud>
+}
+
+
+```
+
+### **viewmodels**: 
+Actúa como capa intermediar entre los repositorios y la interfaz de usuaria, aplicando la lógica de negocio y funcionando como un controlador. En este caso, todas las operaciones asíncronas las gestionamos directamente en los métodos del viewmodel gracias al viewModelScope.launchedEffect{ .. }
+
+Además, los estados los manejamos con un StateFlow, que es lo más apropiado para jetpackcompose (aunque igualmente podríamos usar LiveData, propio de los xml).
+
+
+```
+@HiltViewModel
+class ViewModel @Inject constructor(
+    private val repository: Repository
+) : ViewModel() {
+
+    private val _vacantes = MutableStateFlow<List<Vacante>>(emptyList())
+    val vacantes: MutableStateFlow<List<Vacante>> get() = _vacantes
+
+    private val _error =MutableStateFlow<String?>(null)
+    val error: MutableStateFlow<String?> get() = _error
+
+    private val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> get() = _loading
+
+
+    init {
+        fetchVacantes()
+    }
+
+    fun fetchVacantes() {
+        viewModelScope.launch {
+            _loading.value = true
+            val result = repository.fetchVacantes()
+            result.onSuccess {
+                _vacantes.value = it
+                _error.value = null
+            }
+            result.onFailure {
+                _error.value = it.message
+            }
+            _loading.value = false
+        }
+    }
+
+}
+```
+
+
+### **navigation**: 
+Creamos un sistema de rutas y navegación a través de un gráfico de navegación.
+
+### **ui**: 
+Todo lo relacionado con la interfaz de usuario (screens, componentes auxilares, tema y ViewModel).
+
 
 
 ## Requisitos
 
 - Android Studio Bumblebee o superior
-- JDK 11 o superior
+- JDK 17 o superior
 
 ## Instalación
 
