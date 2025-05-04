@@ -60,7 +60,7 @@ fun LoginBody(
     authViewModel: AuthViewModel = LocalAuthViewModel.current,
     navigationViewModel: NavigationViewModel = LocalNavigationViewModel.current,
 ) {
-    var email by remember { mutableStateOf("test@test.com") }
+    var email by remember { mutableStateOf("javi@test.com") }
     var password by remember { mutableStateOf("1234") }
     val context = LocalContext.current
 

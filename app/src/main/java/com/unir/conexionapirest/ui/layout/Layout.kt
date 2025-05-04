@@ -59,8 +59,7 @@ fun MainLayout(
 
     val userState by authViewModel.userState.collectAsState()
 
-
-    var selectedItem by remember { mutableStateOf(0) }
+    val selectedItem: Int by nav.selectedRoute.collectAsState()
 
     val items = listOf("Perfil", "Vacantes", "Solicitudes")
 
@@ -80,8 +79,8 @@ fun MainLayout(
                         NavigationBarItem(
                             selected = selectedItem == index,
                             onClick = {
+                                nav.setSelectedRoute(index)
 
-                                selectedItem = index
                                 when (item) {
                                     "Perfil" -> {
                                         nav.navigate(ScreensRoutes.UserScreen.route)
@@ -94,8 +93,8 @@ fun MainLayout(
                                     "Vacantes" -> {
                                         nav.navigate(ScreensRoutes.VacantesScreen.route)
                                     }
-
                                 }
+
                             },
                             icon = {
                                 Icon(

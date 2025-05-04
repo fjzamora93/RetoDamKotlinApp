@@ -6,7 +6,7 @@ Para este proyecto se ha optado por una versión minimalista de los requisitos, 
 
 - **Acceso a las vacantes disponibles**: en la segunda pantalla encontraremos un listado con todas las vacantes disponibles. Se incluye una barra de búsqueda para poder realizar un filtro básico. Al pulsar el icono "+", se podrá añadir un comentario (simulando lo que sería una postulación completa) y se enviará una request de método POST al backend para añadir una nueva solicitud a la vacante. Para un desarrollo completo, sería necesario introducir todos los campos del formulario, aunque este sirve de muestra para ver cómo se comporta.
 
--**SOlicitudes**: en esta pantalla el usuario puede ver todas las solicitudes asociadas a su cuenta. POdría mejorarse con la opción de editar dichas solicitudes o eliminarlas.
+- **SOlicitudes**: en esta pantalla el usuario puede ver todas las solicitudes asociadas a su cuenta. POdría mejorarse con la opción de editar dichas solicitudes o eliminarlas.
 
 
 ## Características
